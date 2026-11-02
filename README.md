@@ -19,7 +19,7 @@
 2. [GitHub 사전 릴리스](https://github.com/k0102575/d2rmm-rune-gamble/releases/tag/v0.1.0-alpha.1)의 Assets에서 `ProbabilisticRuneDowngrade-0.1.0-alpha.1.zip`을 받아 **D2RMM 루트 폴더**에 풉니다. `mods/ProbabilisticRuneDowngrade/mod.json`이 있어야 합니다.
 3. D2RMM 1.9 이상에서 모드를 선택합니다. 기본 `Ist-only prototype`을 유지합니다. 악마술사의 군림 데이터 경로 `global/excel`만 수정하며 경로 선택 옵션은 없습니다. 기존 레저렉션 캐릭터는 지원하지 않습니다. 실제 게임 검증은 아직 수행하지 않았습니다.
 4. Install Mods로 새로 빌드하고 D2RMM 설정에 맞게 오프라인 게임을 실행합니다. 설치 오류가 나면 오류 전체와 게임/D2RMM 버전을 기록합니다.
-5. [게임 검증 절차](docs/TESTING.ko.md)를 수행한 뒤 전체 등급 옵션을 시험합니다.
+5. [짧은 게임 검증 절차](docs/TESTING.ko.md)에 따라 네 결과의 100% 설정·저장 및 재접속을 확인하고 기본 확률로 10~20회 정도 사용합니다. 대량 반복·결과별 집계는 필요하지 않습니다. 전체 등급 검증은 이후 선택 사항입니다.
 
 ## 저장 호환성과 다른 모드
 
