@@ -1,0 +1,46 @@
+{
+  "name": "Probabilistic Rune Downgrade — Reign of the Warlock (Experimental)",
+  "description": "Reign of the Warlock ONLY / 악마술사의 군림 전용. Offline two-step rune downgrade. Experimental: back up saves. 네 확률 합계는 100. Finish all pending items before changing mods.",
+  "author": "d2rmm-rune-gamble contributors",
+  "version": "0.1.0-alpha.1",
+  "config": [
+    {
+      "id": "doubleChance",
+      "type": "number",
+      "name": "하위 룬 2개 / Two lower runes (%)",
+      "defaultValue": 50,
+      "minValue": 0,
+      "maxValue": 100
+    },
+    {
+      "id": "singleChance",
+      "type": "number",
+      "name": "하위 룬 1개 / One lower rune (%)",
+      "defaultValue": 25,
+      "minValue": 0,
+      "maxValue": 100
+    },
+    {
+      "id": "returnChance",
+      "type": "number",
+      "name": "입력 룬 반환 / Return input (%)",
+      "defaultValue": 10,
+      "minValue": 0,
+      "maxValue": 100
+    },
+    {
+      "id": "missChance",
+      "type": "number",
+      "name": "꽝: 감별 주문서 / Miss: identify scroll (%)",
+      "defaultValue": 15,
+      "minValue": 0,
+      "maxValue": 100
+    },
+    {
+      "id": "istOnly",
+      "type": "checkbox",
+      "name": "이스트만 시험 / Ist-only prototype",
+      "defaultValue": true
+    }
+  ]
+}

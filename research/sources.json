@@ -1,0 +1,57 @@
+[
+  {
+    "file": "misc.txt",
+    "url": "https://raw.githubusercontent.com/D2R-Reimagined/d2r-reimagined-mod/main/data/global/excel/misc.txt",
+    "sha256": "58939d5e2373a003b17f549e56dc0405cb729441767feb68304774ff0657ccd5",
+    "rows": 291,
+    "bytes": 115980
+  },
+  {
+    "file": "itemtypes.txt",
+    "url": "https://raw.githubusercontent.com/D2R-Reimagined/d2r-reimagined-mod/main/data/global/excel/itemtypes.txt",
+    "sha256": "d1366e6c6f6347f84b04e141e8ad040f7621d763dd485a84e47912a4aa941444",
+    "rows": 121,
+    "bytes": 11399
+  },
+  {
+    "file": "itemstatcost.txt",
+    "url": "https://raw.githubusercontent.com/D2R-Reimagined/d2r-reimagined-mod/main/data/global/excel/itemstatcost.txt",
+    "sha256": "86682ffca0f31d95f4a893cc58f0062508870a5d28faa2f0f89af664651477bf",
+    "rows": 443,
+    "bytes": 49463
+  },
+  {
+    "file": "properties.txt",
+    "url": "https://raw.githubusercontent.com/D2R-Reimagined/d2r-reimagined-mod/main/data/global/excel/properties.txt",
+    "sha256": "0e2ae82f7bf657a1e0feb49de2ec33861e207dba43f448b11f95aa259c279cdb",
+    "rows": 441,
+    "bytes": 54492
+  },
+  {
+    "file": "cubemain.txt",
+    "url": "https://raw.githubusercontent.com/D2R-Reimagined/d2r-reimagined-mod/main/data/global/excel/cubemain.txt",
+    "sha256": "4907f3f206caf8fc7c63f7b381eb674c5e6bd83dee781b16e83e373d574b17c2",
+    "rows": 17056,
+    "bytes": 3909522
+  },
+  {
+    "file": "armor.txt",
+    "url": "https://raw.githubusercontent.com/D2R-Reimagined/d2r-reimagined-mod/main/data/global/excel/armor.txt",
+    "sha256": "395b66dd7df906a248d82e5016da53b4a467ed813126d3454b312248f1cd1f6c",
+    "rows": 218,
+    "bytes": 81428
+  },
+  {
+    "file": "weapons.txt",
+    "url": "https://raw.githubusercontent.com/D2R-Reimagined/d2r-reimagined-mod/main/data/global/excel/weapons.txt",
+    "sha256": "346a2ced47c36ef4a93774c409f025673a2ec574f287734da2c8546a7ae60d8b",
+    "rows": 307,
+    "bytes": 121550
+  },
+  {
+    "file": "hd/items/items.json",
+    "url": "https://raw.githubusercontent.com/D2R-Reimagined/d2r-reimagined-mod/main/data/hd/items/items.json",
+    "sha256": "45a332d24fc9498d6a68efff5bcbba27550068ff22a2f75bc8a1658b1df39cf0",
+    "bytes": 38434
+  }
+]

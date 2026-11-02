@@ -1,0 +1,456 @@
+/*
+ * 확률형 룬 분해 모드 — 악마술사의 군림 전용
+ *
+ * 이 파일은 D2RMM의 '모드 설치' 버튼을 누를 때 실행됩니다.
+ * 게임에서 큐브를 누를 때마다 이 JavaScript가 실행되는 것은 아닙니다.
+ * 여기서는 게임이 사용할 아이템과 조합법을 만들어 둡니다.
+ *
+ * 게임 안의 흐름:
+ *   룬 1개 + 감별 주문서 1개
+ *     → 분해 대기 아이템 (게임 엔진이 추첨값 1~100을 부여)
+ *     → 대기 아이템만 다시 조합
+ *     → 추첨값에 해당하는 결과 지급
+ *
+ * 아래 순서로 읽으면 됩니다.
+ *   1. 설정 검사 → 2. 공통 함수 → 3. 원본 데이터 검사
+ *   4. 이름·아이콘 준비 → 5. 대기 아이템 정의
+ *   6. 등급별 아이템·조합법 생성 → 7. 파일 저장
+ */
+
+// ── 1. 설정 검사 ──────────────────────────────────────────────
+
+// 문제가 있으면 설치를 중단합니다. 오류 앞에 모드 이름을 붙입니다.
+const fail = message => {
+  throw new Error('[PRDG] ' + message);
+};
+
+if (D2RMM.getVersion() < 1.9) {
+  fail('D2RMM 1.9+ is required.');
+}
+
+// 배열의 순서가 결과 번호입니다.
+// 0: 하위 룬 2개 / 1: 하위 룬 1개 / 2: 원래 룬 / 3: 꽝
+const chances = [
+  'doubleChance',
+  'singleChance',
+  'returnChance',
+  'missChance',
+].map(key => {
+  const n = config[key];
+
+  if (!Number.isInteger(n) || n < 0 || n > 100) {
+    fail(key + ': expected integer 0..100.');
+  }
+
+  return n;
+});
+
+// 잘못 입력한 확률을 임의로 보정하지 않습니다.
+if (chances.reduce((a, b) => a + b, 0) !== 100) {
+  fail('Probabilities must sum to exactly 100 / 확률 합계는 100이어야 합니다.');
+}
+
+// 악마술사의 군림 데이터만 수정합니다. base 경로는 사용하지 않습니다.
+const prefix = 'global\\excel\\';
+
+// 수정할 테이블을 모아 두었다가 마지막 단계에서 저장합니다.
+const files = {};
+
+// ── 2. 테이블을 다루는 공통 함수 ───────────────────────────────
+
+// TSV는 탭으로 칸을 나눈 게임 데이터입니다.
+// headers = 열 이름 목록, rows = 각 행의 데이터입니다.
+// readOnly가 true인 테이블은 검사만 하고 저장 목록에는 넣지 않습니다.
+function load(name, columns, readOnly = false) {
+  const path = prefix + name + '.txt';
+  let t;
+
+  try {
+    t = D2RMM.readTsv(path, { removeCarriageReturns: true });
+  } catch (e) {
+    fail('Required table unreadable: ' + path + ': ' + e);
+  }
+
+  if (!t || !Array.isArray(t.rows) || !Array.isArray(t.headers)) {
+    fail('Invalid table: ' + path);
+  }
+
+  columns.forEach(c => {
+    if (!t.headers.includes(c)) {
+      fail(path + ': missing column ' + c);
+    }
+  });
+
+  if (!readOnly) {
+    files[path] = t;
+  }
+
+  return t;
+}
+
+// 원본의 열 이름을 유지하면서 모든 칸이 빈 새 행을 만듭니다.
+function blank(t) {
+  return Object.fromEntries(t.headers.map(h => [h, '']));
+}
+
+// 필요한 값만 채워서 행을 추가합니다. 게임 테이블의 값은 문자열입니다.
+function add(t, values) {
+  Object.keys(values).forEach(k => {
+    if (!t.headers.includes(k)) {
+      fail('Missing required output column: ' + k);
+    }
+  });
+
+  const row = Object.assign(blank(t), values);
+
+  if (t.headers.includes('*eol')) {
+    row['*eol'] = '0';
+  }
+
+  t.rows.push(row);
+  return row;
+}
+
+// 예: unique(misc, 'code', 'isc')는 감별 주문서 행 하나를 찾습니다.
+// 없거나 두 개 이상이면 원본/다른 모드와의 충돌 가능성이 있어 중단합니다.
+function unique(t, key, value) {
+  const rows = t.rows.filter(r => r[key] === value);
+
+  if (rows.length !== 1) {
+    fail('Expected exactly one ' + key + '=' + value);
+  }
+
+  return rows[0];
+}
+
+// ── 3. 게임 테이블 읽기 및 충돌 검사 ───────────────────────────
+
+// misc: 룬·주문서·대기 아이템의 기본 정보
+const misc = load('misc', [
+  'code', 'namestr', 'type', 'type2', 'compactsave', 'invfile',
+  'flippyfile', 'useable', 'stackable', 'spawnable', 'auto prefix',
+  'spelldesc', 'spelldescstr', 'normcode', 'ubercode', 'ultracode',
+  'gemsockets',
+]);
+
+// itemtypes: 아이템 종류 / itemstatcost: 아이템에 저장되는 속성 정의
+const types = load('itemtypes', [
+  'Code', 'ItemType', 'Equiv1', 'Equiv2', 'Normal', 'Body',
+  'Magic', 'Rare', 'TreasureClass', 'VarInvGfx',
+]);
+
+const stats = load('itemstatcost', [
+  'Stat', 'Save Bits', 'Save Add', 'Send Bits', 'Send Other',
+  'Signed', 'Encode', 'ValShift', 'Save Param Bits', 'descfunc',
+]);
+
+// properties: 조합 속성을 실제 스탯에 연결 / cubemain: 큐브 조합법
+const props = load('properties', ['code', 'func1', 'stat1']);
+
+const cube = load('cubemain', [
+  'description', 'enabled', 'version', 'numinputs', 'input 1',
+  'input 2', 'output', 'output b', 'op', 'param', 'value',
+  'mod 1', 'mod 1 chance', 'mod 1 min', 'mod 1 max',
+]);
+
+// 다른 아이템 분류에서도 같은 코드를 쓰고 있는지 검사합니다.
+const armor = load('armor', ['code'], true);
+const weapons = load('weapons', ['code'], true);
+
+if ([armor, weapons].some(t =>
+  t.rows.some(r => String(r.code).toLowerCase().startsWith('prg'))
+)) {
+  fail('PRG item code collision in armor/weapons.');
+}
+
+const statIDColumn = stats.headers.includes('*ID') ? '*ID' : 'ID';
+
+if (!stats.headers.includes(statIDColumn)) {
+  fail('itemstatcost requires ID or *ID.');
+}
+
+// 스탯 ID는 행 위치와 연결됩니다. 기존 행 사이에 끼워 넣지 않습니다.
+// 기존 ID가 순서대로 있는지 확인하고 맨 끝에 새 스탯을 추가합니다.
+stats.rows.forEach((r, i) => {
+  if (Number(r[statIDColumn]) !== i || r[statIDColumn] === '') {
+    fail('Non-contiguous itemstatcost IDs at row ' + i);
+  }
+});
+
+const statID = stats.rows.length;
+
+// 511은 저장 데이터의 종료 표식이므로 스탯 ID로 사용할 수 없습니다.
+if (statID > 510) {
+  fail('No safe item stat ID available (511 is reserved).');
+}
+
+// 이 모드는 자체 이름에 prg/PRG 접두사를 사용합니다.
+for (const [table, key] of [
+  [misc, 'code'],
+  [types, 'Code'],
+  [stats, 'Stat'],
+  [props, 'code'],
+]) {
+  if (table.rows.some(r => String(r[key]).toLowerCase().startsWith('prg'))) {
+    fail('PRG namespace collision in ' + key);
+  }
+}
+
+if (cube.rows.some(r => String(r.description).startsWith('PRDG:'))) {
+  fail('Recipes already installed in input data. Rebuild from original game data.');
+}
+
+const scroll = unique(misc, 'code', 'isc');
+
+if (scroll.stackable !== '0') {
+  fail('Stacked identify scrolls are unsupported.');
+}
+
+for (let rank = 1; rank <= 33; rank++) {
+  const r = unique(misc, 'code', 'r' + String(rank).padStart(2, '0'));
+
+  if (r.stackable !== '0' || r.type !== 'rune') {
+    fail('Modified/stacked rune unsupported: ' + r.code);
+  }
+}
+
+// ── 4. 표시 이름과 HD 아이콘 준비 ──────────────────────────────
+
+const stringsPath = 'local\\lng\\strings\\item-runes.json';
+const hdPath = 'hd\\items\\items.json';
+let strings, hd;
+
+try {
+  strings = D2RMM.readJson(stringsPath);
+  hd = D2RMM.readJson(hdPath);
+} catch (e) {
+  fail('Required strings or HD item mapping missing: ' + e);
+}
+
+if (!Array.isArray(strings) || !Array.isArray(hd)) {
+  fail('Unsupported localization/HD JSON schema.');
+}
+
+if (
+  strings.some(s => String(s.Key).startsWith('PRG')) ||
+  hd.some(s => Object.keys(s).some(k => k.startsWith('prg')))
+) {
+  fail('String or HD namespace collision.');
+}
+
+const languageKeys = [
+  'enUS', 'zhTW', 'deDE', 'esES', 'frFR', 'itIT', 'koKR',
+  'plPL', 'esMX', 'jaJP', 'ptBR', 'ruRU', 'zhCN',
+];
+
+// 한글과 영어 문자열을 등록합니다. 나머지 언어에는 영어를 표시합니다.
+function text(key, en, ko) {
+  const row = { id: D2RMM.getNextStringID(), Key: key };
+
+  languageKeys.forEach(lang => {
+    row[lang] = lang === 'koKR' ? ko : en;
+  });
+
+  strings.push(row);
+}
+
+text(
+  'PRGHelp',
+  'Transmute again alone to reveal the result',
+  '추가 재료 없이 단독으로 다시 조합하세요',
+);
+
+// ── 5. 추첨값을 담을 스탯과 전용 아이템 종류 정의 ──────────────
+
+// prg_roll: 대기 아이템에 1~100 값을 저장할 숨은 스탯입니다.
+// 7비트는 0~127을 표현하므로 추첨값을 담을 수 있습니다.
+// 표시 함수(descfunc)는 비워 두어 추첨값 자체는 툴팁에 표시하지 않습니다.
+add(stats, {
+  Stat: 'prg_roll',
+  [statIDColumn]: String(statID),
+  'Send Other': '1',
+  Signed: '0',
+  'Send Bits': '7',
+  Encode: '0',
+  ValShift: '0',
+  'Save Bits': '7',
+  'Save Add': '0',
+  'Save Param Bits': '0',
+});
+
+// 조합법에서 prg_roll 속성을 지정하면 위 스탯에 값이 들어가게 연결합니다.
+// func1=1은 min~max 범위에서 값을 정하는 게임 엔진의 속성 함수입니다.
+add(props, {
+  code: 'prg_roll',
+  func1: '1',
+  stat1: 'prg_roll',
+});
+
+// 룬/참 계열을 상속하지 않는 대기 아이템 전용 종류입니다.
+add(types, {
+  ItemType: 'PRG Pending Result',
+  Code: 'prgp',
+  Normal: '1',
+  Body: '0',
+  Magic: '0',
+  Rare: '0',
+  TreasureClass: '0',
+  VarInvGfx: '0',
+});
+
+// ── 6. 등급마다 대기 아이템과 두 단계 조합법 생성 ──────────────
+
+// 시험 모드: 이스트(24) 하나 / 전체 모드: 엘드(2)~조드(33)
+const ranks = config.istOnly ? [24] : Array.from({ length: 32 }, (_, i) => i + 2);
+
+// 등급마다 첫 단계 1행 + 결과 판정 100행을 추가합니다.
+// 이 상한은 시험판의 보수적인 제한이며 현행 엔진 한도를 입증한 값은 아닙니다.
+if (cube.rows.length + ranks.length * 101 > 32767) {
+  fail('Experimental safety cap: total cube rows exceed 32767.');
+}
+
+for (const rank of ranks) {
+  // 예: rank=24라면 rune=r24(이스트), lower=r23(말)입니다.
+  const tag = String(rank).padStart(2, '0');
+  const pending = 'prg' + (rank - 2).toString(36);
+  const rune = 'r' + tag, lower = 'r' + String(rank - 1).padStart(2, '0');
+  const key = 'PRGPending' + tag;
+
+  // 입력 룬의 이름과 그림을 재사용하지만, 기능은 전용 대기 아이템입니다.
+  const sourceRune = unique(misc, 'code', rune);
+  const sourceName = unique({ rows: strings }, 'Key', sourceRune.namestr);
+  const sourceHD = hd.find(entry => entry[rune]);
+
+  if (!sourceName.enUS || !sourceName.koKR) {
+    fail('English/Korean rune name missing: ' + rune);
+  }
+
+  if (!sourceRune.invfile || !sourceRune.flippyfile || !sourceHD || !sourceHD[rune].asset) {
+    fail('Rune graphics missing: ' + rune);
+  }
+
+  // 아이템 코드는 4글자입니다. 마지막 한 글자는 36진수(0~9, a~z)로
+  // 등급을 구분하므로 32개 등급을 서로 다른 코드로 표현할 수 있습니다.
+  text(
+    key,
+    sourceName.enUS + ' — Pending Downgrade',
+    sourceName.koKR + ' — 분해 대기',
+  );
+
+  // 빈 행에서 시작해 상점·주문·참 접두사 같은 기존 기능의 유입을 막습니다.
+  const row = add(misc, {
+    name: key,
+    code: pending,
+    namestr: key,
+    type: 'prgp',
+    compactsave: '0',       // 추가 스탯(추첨값)까지 저장하도록 설정
+    version: '100',
+    level: '1',
+    levelreq: '0',
+    spawnable: '0',
+    nodurability: '1',
+    cost: '0',
+    component: '16',
+    invwidth: '1',          // 인벤토리에서 1×1 크기
+    invheight: '1',
+    hasinv: '0',
+    gemsockets: '0',
+    useable: '0',
+    stackable: '0',         // 추첨값이 다른 대기 아이템을 겹치지 않음
+    spawnstack: '0',
+    minstack: '0',
+    maxstack: '0',
+    unique: '0',
+    belt: '0',
+    autobelt: '0',
+    spelldesc: '1',
+    spelldescstr: 'PRGHelp', // 재조합 안내 문자열
+    pSpell: '-1',
+    spellicon: '-1',
+    normcode: pending,
+    ubercode: pending,
+    ultracode: pending,
+  });
+
+  // 그림·바닥 모델·소리 등 표시용 필드만 입력 룬에서 가져옵니다.
+  // 추후 전용 이미지 적용 시 이 부분의 invfile/flippyfile 등을 교체합니다.
+  [
+    'invfile', 'flippyfile', 'alternategfx', 'dropsound',
+    'dropsfxframe', 'usesound', 'transtbl',
+  ].forEach(k => {
+    if (misc.headers.includes(k)) {
+      row[k] = sourceRune[k];
+    }
+  });
+
+  if (misc.headers.includes('AdvancedStashStackable')) {
+    row.AdvancedStashStackable = '0';
+  }
+
+  // HD 그래픽도 입력 룬의 자산을 참조합니다.
+  // 추후 전용 HD 이미지 적용 시 아래 asset 연결을 교체합니다.
+  hd.push({ [pending]: JSON.parse(JSON.stringify(sourceHD[rune])) });
+
+  // 첫 번째 조합: 룬 + 감별 주문서 → 추첨값을 가진 대기 아이템
+  // mod 1 chance=100은 '스탯을 항상 붙인다'는 뜻입니다.
+  // 네 결과의 확률은 여기서 따로 굴리지 않고 아래의 값 구간으로 나눕니다.
+  add(cube, {
+    description: 'PRDG: roll ' + rune,
+    enabled: '1',
+    version: '100',
+    numinputs: '2',
+    'input 1': rune,
+    'input 2': 'isc',
+    output: pending + ',nor',
+    lvl: '1',
+    'mod 1': 'prg_roll',
+    'mod 1 chance': '100',
+    'mod 1 min': '1',
+    'mod 1 max': '100',
+  });
+
+  // 두 번째 조합: 대기 아이템 → 저장된 추첨값에 대응하는 결과
+  // 값마다 조합법 하나를 만들어 조합법 순서에 의존하지 않게 합니다.
+  for (let roll = 1; roll <= 100; roll++) {
+    let outcome = 0, bound = chances[0];
+
+    // 기본 확률에서 누적 경계(bound)는 50 → 75 → 85 → 100입니다.
+    // 예: roll=60이면 50을 넘어서 outcome=1(하위 룬 1개)이 됩니다.
+    // 확률이 0인 결과의 구간은 자동으로 건너뜁니다.
+    while (roll > bound) {
+      outcome++;
+      bound += chances[outcome];
+    }
+
+    // op=18: param이 가리키는 아이템 스탯이 value와 같을 때만 허용합니다.
+    // output b는 두 개 당첨 때만 사용합니다. 나머지는 빈 값입니다.
+    // 원본을 변형/복사하지 않고 새 룬을 생성해 대기 스탯이 넘어가지 않게 합니다.
+    add(cube, {
+      description: 'PRDG: resolve ' + rune + ' ' + roll,
+      enabled: '1',
+      version: '100',
+      numinputs: '1',
+      'input 1': pending,
+      op: '18',
+      param: String(statID),
+      value: String(roll),
+      output: outcome < 2 ? lower : outcome === 2 ? rune : 'isc',
+      'output b': outcome === 0 ? lower : '',
+    });
+  }
+}
+
+// ── 7. 생성한 테이블과 문자열 저장 ─────────────────────────────
+
+// 위 검사와 생성이 모두 끝난 뒤 처음으로 파일을 씁니다.
+Object.keys(files).forEach(path => {
+  D2RMM.writeTsv(path, files[path], { addCarriageReturns: true });
+});
+
+D2RMM.writeJson(stringsPath, strings);
+D2RMM.writeJson(hdPath, hd);
+
+console.log(
+  '[PRDG] ' + ranks.length + ' ranks, ' + (ranks.length * 101) +
+  ' recipes; stat ID ' + statID + '. Experimental: verify in game.',
+);

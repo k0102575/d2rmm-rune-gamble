@@ -1,0 +1,14 @@
+{
+  "inputs": {
+    "mods/ProbabilisticRuneDowngrade/mod.js": "5aab7da08b43583bd16a608903b5a53d15443b6652044549d53c4e00d1049872",
+    "mods/ProbabilisticRuneDowngrade/mod.json": "c0148bf8a78c30430ba26b0e60f16586267d433c877bfce2285741da30188a29",
+    "research/schema.json": "c7e5a39958a23432062851714ebf2857d9e888cd31fa462108c2512306974709",
+    "tools/verify.mjs": "44ab2e9441747a6ec880e7dbf88080378478291ea68c4c1728595a6fb6c5f39b"
+  },
+  "date": "2026-11-02",
+  "checks": 20,
+  "status": "PASS",
+  "engine": "Node vm; mocked D2RMM API",
+  "actualTables": true,
+  "limitations": "Not D2RMM installation or game execution. Reign of the Warlock tables only; no base-game support."
+}
