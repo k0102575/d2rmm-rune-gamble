@@ -43,7 +43,7 @@ function verify(overrides={},actual=false) {
  const chances=['doubleChance','singleChance','returnChance','missChance'].map(k=>({...defaults,...overrides})[k]);
  for(const start of rows.filter(r=>r.numinputs==='2')) {
   assert.equal(start['input 2'],'isc');assert.equal(start['mod 1 min'],'1');assert.equal(start['mod 1 max'],'100');
-  const pending=start.output.split(',')[0]; assert.equal(pending.length,4);
+  const pending=start.output.split(',')[0]; assert.equal(pending.length,3); assert.match(pending,/^pg[0-9a-v]$/);
   const item=t.misc.rows.find(r=>r.code===pending); assert.equal(item.compactsave,'0');assert.equal(item.type,'prgp');assert.equal(item.stackable,'0');assert.equal(item.type2,'');assert.equal(item['auto prefix'],'');
   const inputRune=t.misc.rows.find(r=>r.code===start['input 1']);
   for(const field of ['invfile','flippyfile','alternategfx']) assert.equal(item[field],inputRune[field]);
@@ -69,12 +69,12 @@ for(let i=0;i<4;i++){const c={istOnly:false};['doubleChance','singleChance','ret
 for(const bad of [{doubleChance:51},{doubleChance:-1},{doubleChance:0.5},{doubleChance:'50'},{missChance:NaN}]) {
  const r=run(bad);assert.ok(r.error);assert.equal(r.writes.length,0);checks++;
 }
-for(const mutate of [t=>t.misc.rows.find(r=>r.code==='r24').invfile='',t=>t.armor.rows.push({code:'prg0'}),t=>t.misc.rows.push({...t.misc.rows[0],code:'prg0'}),t=>t.misc.headers=t.misc.headers.filter(h=>h!=='compactsave'),t=>t.misc.headers=t.misc.headers.filter(h=>h!=='component'),t=>t.misc.rows.find(r=>r.code==='r24').stackable='1',t=>t.itemstatcost.rows[2]['*ID']='999',t=>{while(t.itemstatcost.rows.length<511){let i=t.itemstatcost.rows.length;t.itemstatcost.rows.push({Stat:'synthetic_'+i,'*ID':String(i)});}}]) {
+for(const mutate of [t=>t.misc.rows.find(r=>r.code==='r24').invfile='',t=>t.armor.rows.push({code:'prg0'}),t=>t.armor.rows.push({code:'pgm'}),t=>t.weapons.rows.push({code:'pgm'}),t=>t.misc.rows.push({code:'pgm'}),t=>t.misc.rows.push({...t.misc.rows[0],code:'prg0'}),t=>t.misc.headers=t.misc.headers.filter(h=>h!=='compactsave'),t=>t.misc.headers=t.misc.headers.filter(h=>h!=='component'),t=>t.misc.rows.find(r=>r.code==='r24').stackable='1',t=>t.itemstatcost.rows[2]['*ID']='999',t=>{while(t.itemstatcost.rows.length<511){let i=t.itemstatcost.rows.length;t.itemstatcost.rows.push({Stat:'synthetic_'+i,'*ID':String(i)});}}]) {
  const r=run({},mutate);assert.ok(r.error);assert.equal(r.writes.length,0);checks++;
 }
 if(fs.existsSync('/tmp/rg-cubemain.txt')) verify({istOnly:false},true);
 const sha = s => createHash('sha256').update(s).digest('hex');
 const inputs=Object.fromEntries(['mods/ProbabilisticRuneDowngrade/mod.js','mods/ProbabilisticRuneDowngrade/mod.json','research/schema.json','tools/verify.mjs'].map(p=>[p,sha(read(p))]));
-const report={inputs,date:'2026-11-02',checks,status:'PASS',engine:'Node vm; mocked D2RMM API',actualTables:fs.existsSync('/tmp/rg-cubemain.txt'),limitations:'Not D2RMM installation or game execution. Reign of the Warlock tables only; no base-game support.'};
+const report={inputs,date:'2026-11-03',checks,status:'PASS',engine:'Node vm; mocked D2RMM API',actualTables:fs.existsSync('/tmp/rg-cubemain.txt'),limitations:'Not D2RMM installation or game execution. Reign of the Warlock tables only; no base-game support.'};
 fs.writeFileSync(new URL('docs/LOCAL_VALIDATION.json',root),JSON.stringify(report,null,2)+'\n');
 console.log(report);

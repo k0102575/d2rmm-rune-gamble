@@ -54,6 +54,16 @@ if (chances.reduce((a, b) => a + b, 0) !== 100) {
 const prefix = 'global\\excel\\';
 
 // 수정할 테이블을 모아 두었다가 마지막 단계에서 저장합니다.
+// HD 아이템 매핑은 3글자 코드만 지원합니다. pg0~pgv를 예약합니다.
+// itemtypes 종류 식별자 prgp(4글자)는 실제 아이템 코드와 별개입니다.
+const pendingCodes = new Set(
+  Array.from({ length: 32 }, (_, i) => 'pg' + i.toString(36)),
+);
+const reservedCode = value => {
+  const code = String(value).toLowerCase();
+  return code.startsWith('prg') || pendingCodes.has(code);
+};
+
 const files = {};
 
 // ── 2. 테이블을 다루는 공통 함수 ───────────────────────────────
@@ -158,7 +168,7 @@ const armor = load('armor', ['code'], true);
 const weapons = load('weapons', ['code'], true);
 
 if ([armor, weapons].some(t =>
-  t.rows.some(r => String(r.code).toLowerCase().startsWith('prg'))
+  t.rows.some(r => reservedCode(r.code))
 )) {
   fail('PRG item code collision in armor/weapons.');
 }
@@ -191,7 +201,7 @@ for (const [table, key] of [
   [stats, 'Stat'],
   [props, 'code'],
 ]) {
-  if (table.rows.some(r => String(r[key]).toLowerCase().startsWith('prg'))) {
+  if (table.rows.some(r => reservedCode(r[key]))) {
     fail('PRG namespace collision in ' + key);
   }
 }
@@ -233,7 +243,7 @@ if (!Array.isArray(strings) || !Array.isArray(hd)) {
 
 if (
   strings.some(s => String(s.Key).startsWith('PRG')) ||
-  hd.some(s => Object.keys(s).some(k => k.startsWith('prg')))
+  hd.some(s => Object.keys(s).some(k => reservedCode(k)))
 ) {
   fail('String or HD namespace collision.');
 }
@@ -312,7 +322,7 @@ if (cube.rows.length + ranks.length * 101 > 32767) {
 for (const rank of ranks) {
   // 예: rank=24라면 rune=r24(이스트), lower=r23(말)입니다.
   const tag = String(rank).padStart(2, '0');
-  const pending = 'prg' + (rank - 2).toString(36);
+  const pending = 'pg' + (rank - 2).toString(36);
   const rune = 'r' + tag, lower = 'r' + String(rank - 1).padStart(2, '0');
   const key = 'PRGPending' + tag;
 
@@ -329,7 +339,7 @@ for (const rank of ranks) {
     fail('Rune graphics missing: ' + rune);
   }
 
-  // 아이템 코드는 4글자입니다. 마지막 한 글자는 36진수(0~9, a~z)로
+  // 아이템 코드는 3글자입니다. 마지막 한 글자는 36진수(0~9, a~z)로
   // 등급을 구분하므로 32개 등급을 서로 다른 코드로 표현할 수 있습니다.
   text(
     key,
