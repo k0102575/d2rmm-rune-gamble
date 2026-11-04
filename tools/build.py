@@ -1,4 +1,4 @@
-"""Build a deterministic local D2RMM trial ZIP; never uploads anything."""
+"""Build a deterministic local D2RMM installation ZIP; never uploads anything."""
 import hashlib
 import json
 from pathlib import Path

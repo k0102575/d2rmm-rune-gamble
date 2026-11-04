@@ -138,9 +138,8 @@ function unique(t, key, value) {
 // misc: 룬·주문서·대기 아이템의 기본 정보
 const misc = load('misc', [
   'code', 'namestr', 'type', 'type2', 'compactsave', 'invfile',
-  'flippyfile', 'useable', 'stackable', 'spawnable', 'auto prefix',
-  'spelldesc', 'spelldescstr', 'normcode', 'ubercode', 'ultracode',
-  'gemsockets',
+  'flippyfile', 'useable', 'stackable', 'spawnable',
+  'spelldesc', 'spelldescstr', 'gemsockets',
 ]);
 
 // itemtypes: 아이템 종류 / itemstatcost: 아이템에 저장되는 속성 정의
@@ -181,10 +180,14 @@ if (!stats.headers.includes(statIDColumn)) {
 
 // 스탯 ID는 행 위치와 연결됩니다. 기존 행 사이에 끼워 넣지 않습니다.
 // 기존 ID가 순서대로 있는지 확인하고 맨 끝에 새 스탯을 추가합니다.
+const existingStatNames = new Set();
 stats.rows.forEach((r, i) => {
-  if (Number(r[statIDColumn]) !== i || r[statIDColumn] === '') {
-    fail('Non-contiguous itemstatcost IDs at row ' + i);
+  if (typeof r.Stat !== 'string' ||
+      !r.Stat.trim() ||
+      existingStatNames.has(r.Stat)) {
+    fail('Empty or duplicate itemstatcost Stat at row ' + i);
   }
+  existingStatNames.add(r.Stat);
 });
 
 const statID = stats.rows.length;
@@ -204,6 +207,29 @@ for (const [table, key] of [
   if (table.rows.some(r => reservedCode(r[key]))) {
     fail('PRG namespace collision in ' + key);
   }
+}
+
+// Relics of Sanctuary: 동일한 Mythic 속성 중복 등록 대응
+const mythicEntries = props.rows
+  .map((row, index) => ({ row, index }))
+  .filter(entry => entry.row.code === 'item-mythic');
+
+for (let n = 1; n < mythicEntries.length; n++) {
+  const first = mythicEntries[0].row;
+  const { row, index } = mythicEntries[n];
+
+  const identical = props.headers.every(
+    key => String(row[key] ?? '') === String(first[key] ?? '')
+  );
+
+  if (first.func1 !== '8' ||
+      first.stat1 !== 'item_mythic' ||
+      !identical) {
+    fail('Conflicting item-mythic definitions; compatibility repair aborted.');
+  }
+
+  row.code = 'prg_mythic_' + index.toString(36);
+  console.log('[PRDG] Relics compatibility: renamed duplicate at row ' + index);
 }
 
 if (cube.rows.some(r => String(r.description).startsWith('PRDG:'))) {
@@ -310,13 +336,13 @@ add(types, {
 
 // ── 6. 등급마다 대기 아이템과 두 단계 조합법 생성 ──────────────
 
-// 시험 모드: 이스트(24) 하나 / 전체 모드: 엘드(2)~조드(33)
-const ranks = config.istOnly ? [24] : Array.from({ length: 32 }, (_, i) => i + 2);
+// 엘드(2)~조드(33) 전체 32등급을 항상 생성합니다. 엘은 분해하지 않습니다.
+const ranks = Array.from({ length: 32 }, (_, i) => i + 2);
 
 // 등급마다 첫 단계 1행 + 결과 판정 100행을 추가합니다.
 // 이 상한은 시험판의 보수적인 제한이며 현행 엔진 한도를 입증한 값은 아닙니다.
 if (cube.rows.length + ranks.length * 101 > 32767) {
-  fail('Experimental safety cap: total cube rows exceed 32767.');
+  fail('Safety cap: total cube rows exceed 32767.');
 }
 
 for (const rank of ranks) {
@@ -377,9 +403,6 @@ for (const rank of ranks) {
     spelldescstr: 'PRGHelp', // 재조합 안내 문자열
     pSpell: '-1',
     spellicon: '-1',
-    normcode: pending,
-    ubercode: pending,
-    ultracode: pending,
   });
 
   // 그림·바닥 모델·소리 등 표시용 필드만 입력 룬에서 가져옵니다.
@@ -462,5 +485,5 @@ D2RMM.writeJson(hdPath, hd);
 
 console.log(
   '[PRDG] ' + ranks.length + ' ranks, ' + (ranks.length * 101) +
-  ' recipes; stat ID ' + statID + '. Experimental: verify in game.',
+  ' recipes; stat ID ' + statID + '.',
 );

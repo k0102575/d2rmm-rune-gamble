@@ -15,7 +15,7 @@
 ## 구현
 
 1. 설치 시 확률을 검사한다. 모든 필수 컬럼/참조/JSON 구조와 충돌을 쓰기 전에 검사한다.
-2. itemstatcost의 ID(또는 *ID)가 행 위치와 일치하는지 확인하고 끝에 스탯 하나를 추가한다. 511은 종료 표식으로 예약하여 사용하지 않는다. 빈 ID 덮어쓰기를 하지 않는다. 7비트 저장/전송, Save Add=0, Encode=0, ValShift=0; 파라미터 없음, 표시 함수 없음. `Saved/CSvBits`는 캐릭터 기본 스탯용이므로 새 아이템 스탯에 설정하지 않는다. 실제 저장 유지와 클라이언트 동기화는 게임 검증 대상이다.
+2. itemstatcost의 ID(또는 *ID)는 참고값으로 보존하고 행 위치를 실제 ID로 사용해 끝에 스탯 하나를 추가한다. 스탯 이름의 공백/중복은 거부한다. 511은 종료 표식으로 예약하여 사용하지 않는다. 빈 ID 덮어쓰기를 하지 않는다. 7비트 저장/전송, Save Add=0, Encode=0, ValShift=0; 파라미터 없음, 표시 함수 없음. `Saved/CSvBits`는 캐릭터 기본 스탯용이므로 새 아이템 스탯에 설정하지 않는다. 실제 저장 유지와 클라이언트 동기화는 게임 검증 대상이다.
 3. properties의 func1=1로 prg_roll에 min/max 값을 전달한다. 설치 코드에는 난수 호출이 없다.
 4. 독립 타입 prgp, 3글자 아이템 코드 pg0~pgv 중 지원 등급에 대응하는 아이템을 생성한다. 입력 룬의 아이콘·바닥 그래픽·소리와 HD 자산 참조만 재사용하고 타입/affix/벤더 컬럼은 상속하지 않는다. 이름은 원래 룬 이름 뒤에 `— 분해 대기`를 붙인다. 전용 이미지 교체 위치는 mod.js 주석으로 표시했다. 문자열 키 PRG 접두사, 스탯/프로퍼티 prg 접두사를 사용한다. 한국어/영어 제공, 나머지 언어는 영어 대체.
 5. 첫 조합은 두 재료를 소비하고 새 normal 대기 아이템에 prg_roll=1..100 속성을 100% 부여한다.
@@ -37,3 +37,51 @@ D2RMM 1.9.2 installation succeeded but Ist + identify scroll did nothing and lef
 Changed pending item codes to pg0-pgv and added collision guards. The separate itemtypes identifier prgp remains unchanged. This removes a documented compatibility issue; the cause of the reported first-transmute failure is not yet confirmed in game. The old mock tests incorrectly accepted four-character item codes and could not catch this problem.
 
 Retest one Ist + loose identify scroll, then resolve the pending item alone. If still inert, inspect generated cubemain.txt PRDG rows, misc.txt pgm row and D2RMM install logs. Old pending items are not save-compatible with these new codes; use a test-save backup. If no pending item was ever created, there is no pending item to migrate.
+
+
+## 2026-11-04: misc auto prefix 설치 오류 (alpha.3)
+
+사용자가 mod 0.1.0-alpha.2 / D2RMM 1.9.2 / 100/0/0/0 설정에서 첫 조합 무반응을 보고했고, 이후 설치 로그에서 `[PRDG] global\excel\misc.txt: missing column auto prefix`가 확인되었다. 현재 확보한 근거는 이 오류 메시지이며 사용자의 전체 원본/출력 테이블은 아직 받지 않았다. 이 설치 실패가 이전 모든 무반응의 원인이라고 확정하지 않는다.
+
+`auto prefix`는 설치 코드에서 읽거나 할당하지 않는데 필수 열 목록에만 포함되어 있었다. 신규 misc 행은 빈 행에서 생성하므로 해당 열이 존재할 때도 접두사가 상속되지 않는다. 사용하지 않는 이 열의 존재 요구만 제거했고 다른 필수 열과 출력 열 검사는 유지했다.
+
+합성 fixture의 헤더와 각 행에서 이 열을 삭제하여 수정 전 동일 오류를 재현했다. 수정 후 해당 스키마에서 100/0/0/0 Ist-only 및 기본 확률의 전체 등급 생성을 검사했고 기존 검사와 함께 24개 시나리오가 통과했다. 이번 환경에는 공개 수정 테이블 전체가 없어 actualTables=false이다. 실제 사용자 테이블과 D2RMM 앱 설치·게임 조합은 여전히 재검증이 필요하다.
+
+
+### 후속 설치 로그: missing column normcode
+
+사용자가 제공한 2026-11-04T13:15:05Z 로그는 확률 100/0/0/0, istOnly=true, 단독 모드 설치에서 misc 읽기 직후 `missing column normcode`로 중단된다. 따라서 auto prefix 오류와 동일하다고 보고 수정 파일 미적용을 먼저 의심한 안내는 잘못이었다. 이 로그는 사용자의 전체 misc 헤더를 제공하지 않는다.
+
+normcode/ubercode/ultracode는 조사 스키마에 있는 열로, 모드의 misc 아이템 생성에 무조건 요구할 필요가 없다. 필수 목록과 고정 출력에서 제거하고 열이 존재할 때만 자기 코드를 할당하도록 수정했다. 필수 검사에서만 제거하면 add()의 출력 열 검사에서 다시 실패하므로 두 경로를 함께 수정했다. 각 열의 개별 누락과 auto prefix를 포함한 동시 누락을 검사하며, 헤더에 없는 필드를 새 행에 만들지 않는 것도 검사했다. 모의 API 합성 fixture 29개 시나리오 PASS, 실제 앱/게임 재검증은 필요하다.
+
+
+### 후속 설치 로그: Non-contiguous itemstatcost IDs at row 212
+
+2026-11-04T13:18:26Z 로그는 7개 테이블을 모두 읽은 뒤 row 212의 ID 검사에서 실패한다. 사용자의 해당 행 값은 아직 확보하지 않았지만, 공개 D2R-Excel 데이터에서도 인덱스 212의 passive_mastery_gethit_rate에 *ID=213이 기록되어 있다. https://github.com/pinkufairy/D2R-Excel/blob/main/itemstatcost.txt . https://locbones.github.io/D2R_DataGuide/#itemstatcosttxt 는 *ID를 게임이 직접 읽지 않는 주석으로 설명하고, 원저자 가이드 보존본 https://diablo2.org/kb/file-guides/itemstatcost-txt 는 실제 ID가 행 위치임을 명시한다. 이 공개 표본은 사용자 게임과 같은 빌드임을 입증하지 않는다.
+
+주석 ID와 행 위치의 일치를 강제하던 검사를 스탯 이름의 공백/중복 검사로 교체했다. 기존 행·주석값·순서는 보존하고, 새 ID는 기존 행 수로 계산하여 마지막에 추가한다. 예약 ID 511 차단은 유지한다. 회귀 검사에 row 212의 *ID=213, 빈 주석 ID, ID 510 사용 가능/511 차단, 기존 행 보존, 모든 결과 조합 param의 실제 추가 위치 일치를 포함했다. 합성 fixture 33개 시나리오 PASS이며 실제 앱 설치와 게임 동작은 미확인이다.
+
+
+## 기존 모드 병용 시 속성 연결 조사
+
+단독 테스트에서 사용자 보고상 네 결과와 저장/재접속, 결과 룬의 업그레이드/소켓/시험용 룬워드가 정상 동작했다. 병용 테스트에서는 대기 아이템에 가변 화염/번개/냉기 저항 감소가 표시되고 재조합 불가가 보고되었다.
+
+제공된 최종 TSV 4개를 검사했다. prg_roll 스탯은 데이터 행 인덱스 374이고 모든 결과 조합 param도 374이다. 32등급/3,232행이 존재하고 각 등급의 100개 결과는 25/25/25/25로 정확히 분기한다. properties의 item-mythic이 인덱스 290/291에 완전히 같은 행으로 두 번 존재한다. prg_roll 속성은 인덱스 295, 바로 앞 294는 passive_fire_pierce/passive_ltng_pierce/passive_cold_pierce를 부여하는 pierce-elem이다. 고유 코드 순번으로는 prg_roll이 294가 되어 한 칸 어긋날 경우 표시 증상과 일치한다. 실제 현행 엔진의 링크 및 로딩 동작은 아직 직접 확인하지 않았으므로 이는 유력 가설이며 확정된 게임 재현 결과는 아니다.
+
+원인 모드 특정에는 활성 모드 목록·순서 및 item-mythic 행을 추가하는 소스가 필요하다. 기존 모드 행은 자동 삭제/재배열하지 않고, properties 중복 코드가 있으면 우리 모드가 쓰기 전에 구체적인 코드와 행을 알리고 설치를 중단하도록 방어 검사를 추가했다. 동일/상이한 중복 행의 차단을 포함해 합성 검사 35개 PASS. 사용자 원본 테이블은 work/에만 보관하고 버전 관리·배포 ZIP에서 제외한다.
+
+
+## Relics of Sanctuary 소스 확인 및 alpha.4 호환 처리
+
+제공된 Relics 소스에서 addMythicProperty()가 item-mythic을 추가하고, enableExaltedUniques 또는 enableMythicSets일 때 실행되는 addNewItems()가 내장 properties.json의 같은 정의를 추가하는 것을 확인했다. 이는 중복 생성 경로를 확정하지만 현행 엔진의 연결 해석은 여전히 게임 재시험 대상이다.
+
+기존 모드를 수정하지 않고 우리 설치 생성기에서만 호환 처리한다. 동일한 item-mythic 정의(func1=8/stat1=item_mythic, 헤더 기준 전체 값 일치)의 두 번째 이후 코드만 prg_mythic_<원래 행 인덱스의 36진수>로 변경한다. 첫 정의와 기존 숫자 인덱스, 스탯, 다른 모든 필드는 보존한다. 원본 PRG 이름 충돌 검사 후 별칭을 생성하므로 충돌을 묵인하지 않는다. 내용이 다른 Mythic 중복 및 다른 코드 중복은 계속 거부한다.
+
+합성 검사 39개 PASS. 사용자가 제공한 properties/itemstatcost/cubemain/misc에서 기존 PRDG 생성 행만 제거하여 재설치 입력으로 사용하고 나머지 테이블과 JSON 리소스는 합성 자료로 보완한 검사를 별도로 수행했다. properties의 인덱스 291 코드만 변경되며 원래 행 290의 Mythic 정의, 모든 기존 스탯/조합법/행 위치가 보존된다. 모든 속성 코드가 고유해져 prg_roll의 물리적 위치와 고유 코드 순번이 295로 일치한다. 원본 게임 및 사용자 모드 소스는 배포물에 포함하지 않는다. 이미 잘못 생성된 아이템 복구는 보장하지 않는다.
+
+
+## 0.1.0 정식 배포 준비
+
+사용자가 최종 테스트 완료 mod.js를 제공했다. 정식 런타임 코드는 이 파일을 기준으로 하고, istOnly 분기와 시험판 로그 문구만 제거했다. 앞선 클라우드 전용의 일반 properties 중복 차단 및 선택적 misc 등급코드 쓰기 변경은 테스트 완료본에 없으므로 정식 기준에 포함하지 않았다. 따라서 다른 이름의 중복 코드를 자동 검출한다고 주장하지 않는다. 테스트 완료본과의 diff로 범위를 검토한다.
+
+mod.json 이름 Probabilistic Rune Downgrade, author 빵길빵길, version 0.1.0. istOnly 설정은 삭제하고 ranks는 항상 2..33이다. 기본 확률 50/25/10/15는 유지한다. 사용자의 병용 환경 100회 결과는 27/25/23/25, 재접속 후 정상으로 보고되었다. 공개 업로드는 이 로컬 준비 작업에 포함하지 않는다.

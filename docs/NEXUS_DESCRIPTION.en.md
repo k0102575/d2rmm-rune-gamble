@@ -1,7 +1,9 @@
-# Probabilistic Rune Downgrade (Experimental)
+# Probabilistic Rune Downgrade — 0.1.0
 
-An independent offline D2RMM mod for Reign of the Warlock ONLY. Transmute one rune and one identify scroll, then transmute the pending item alone. Defaults: two lower runes 50%, one lower rune 25%, original rune 10%, identify scroll 15%. Four integer percentages are configurable and must total 100.
+Author: 빵길빵길. An offline D2RMM mod for Reign of the Warlock only.
 
-Defaults to the Ist-to-Mal prototype. Disable Ist-only to generate Eld through Zod recipes. Requires D2RMM 1.9+. Extract the ZIP into the D2RMM root, select the mod and install. The table path is fixed to global/excel; base-game characters are unsupported.
+Transmute one rune and one loose Identify Scroll, then transmute the pending item alone. Defaults: two lower runes 50%, one lower rune 25%, original rune returned 10%, Identify Scroll 15%. Configure four integer percentages totaling exactly 100.
 
-Alpha: not tested in game. Back up saves and use a disposable test character. Resolve every pending item before removing/reordering mods or updating game data. Probability changes reinterpret existing pending rolls. Test with other rune downgrade, stacking and corruption mods disabled. Consult the bundled README and test checklist. This listing is an unpublished draft.
+All 32 input ranks, Eld through Zod, are always enabled. El cannot be downgraded. Requires D2RMM 1.9+. Extract the installation ZIP into the D2RMM root and install. Place this mod after Relics of Sanctuary when using both.
+
+User-reported checks cover recipes, use of resulting runes, save/reload, and 100 trials alongside Relics. This does not establish compatibility with every mod combination or patch. Back up saves and test on a copy first. Resolve pending items before changing mods or their order. This listing is an unpublished Nexus draft.

@@ -1,14 +1,14 @@
 {
   "inputs": {
-    "mods/ProbabilisticRuneDowngrade/mod.js": "598c8341223afa56e2e56b4d1d02c4b209facaf698b646fee1fbe49a48768b56",
-    "mods/ProbabilisticRuneDowngrade/mod.json": "5797787ee17201fcc3965c969432c2a32a08b57afeae3d4ed154bbadbc80a4a2",
+    "mods/ProbabilisticRuneDowngrade/mod.js": "992e81a75d7a552659c0fe01ddee2ad1f5383f0e4d83cbbe0684a05dfd56a7d7",
+    "mods/ProbabilisticRuneDowngrade/mod.json": "6f47266a92c2ede2a04665b2373853bb698b1f750c0cdaaabb2198e6a5be3b95",
     "research/schema.json": "c7e5a39958a23432062851714ebf2857d9e888cd31fa462108c2512306974709",
-    "tools/verify.mjs": "f1e36b9bd930afca2af82867a06fcf30d06ee3a8449614a63ce2e16bd0aac036"
+    "tools/verify.mjs": "24953ac6ea07b84785f9c9c0b69a43fc2fa0d325229f33c7ad5d0edfde62ece2"
   },
-  "date": "2026-11-03",
-  "checks": 23,
+  "date": "2026-11-04",
+  "checks": 38,
   "status": "PASS",
   "engine": "Node vm; mocked D2RMM API",
-  "actualTables": true,
-  "limitations": "Not D2RMM installation or game execution. Reign of the Warlock tables only; no base-game support."
+  "actualTables": false,
+  "limitations": "Not D2RMM installation or game execution. Installer checks only; game validation is separately user-reported. Reign of the Warlock only."
 }
