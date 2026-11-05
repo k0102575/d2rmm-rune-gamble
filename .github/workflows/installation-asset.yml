@@ -1,4 +1,4 @@
-name: Add minimal installation ZIP
+name: Refresh release documentation
 
 on:
   push:
@@ -23,13 +23,16 @@ jobs:
         run: node tools/verify.mjs
       - name: Build and verify ZIPs
         run: python3 tools/build.py
-      - name: Add files to existing release
+      - name: Replace documentation archive and update release notes
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           RELEASE_TAG="v$(python3 -c "import json; print(json.load(open('mods/ProbabilisticRuneDowngrade/mod.json'))['version'])")"
           gh release view "$RELEASE_TAG" --json tagName,isDraft,isPrerelease
-          gh release upload "$RELEASE_TAG" dist/*-mods-only.zip dist/*-mods-only.zip.sha256
+          RELEASE_VERSION="${RELEASE_TAG#v}"
+          gh release upload "$RELEASE_TAG" \
+            "dist/ProbabilisticRuneDowngrade-${RELEASE_VERSION}.zip" \
+            "dist/ProbabilisticRuneDowngrade-${RELEASE_VERSION}.zip.sha256" --clobber
           gh release edit "$RELEASE_TAG" --notes-file docs/RELEASE_NOTES.ko.md
           gh release view "$RELEASE_TAG" --json url,assets

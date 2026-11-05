@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0 documentation refresh — 2026-11-05
+
+- Update the release page and documentation archive with all four validation sessions and shared rune-use checks.
+- Distinguish D2RMM 1.9.2 standalone tests from D2RMM 1.9.0 mixed-mod tests.
+- Replace only the documentation archive and its checksum; preserve the minimal installation ZIP, runtime code and v0.1.0 tag.
+
 ## 0.1.0 documentation and minimal package — 2026-11-05
 
 - Add a mods-only installation ZIP containing mod.js, mod.json and the MIT notice.
