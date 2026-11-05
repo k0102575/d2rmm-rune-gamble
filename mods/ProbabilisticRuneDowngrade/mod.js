@@ -1,5 +1,7 @@
 /*
  * 확률형 룬 분해 모드 — 악마술사의 군림 전용
+ * Probabilistic Rune Downgrade 0.1.0 / 제작자: 빵길빵길
+ * 오프라인 D2RMM 데이터 모드입니다. 엘드~조드 전체 등급을 생성합니다.
  *
  * 이 파일은 D2RMM의 '모드 설치' 버튼을 누를 때 실행됩니다.
  * 게임에서 큐브를 누를 때마다 이 JavaScript가 실행되는 것은 아닙니다.
@@ -10,6 +12,19 @@
  *     → 분해 대기 아이템 (게임 엔진이 추첨값 1~100을 부여)
  *     → 대기 아이템만 다시 조합
  *     → 추첨값에 해당하는 결과 지급
+ *
+ * 기본 확률: 하위 룬 2개 50%, 1개 25%, 원래 룬 10%, 주문서(꽝) 15%.
+ * 첫 조합에서 룬과 주문서를 소비하며 성공/유지에는 주문서를 돌려주지 않습니다.
+ * 추첨값은 첫 조합에서 저장됩니다. 두 번째 조합은 새로 추첨하지 않습니다.
+ * 대기 아이템을 남긴 채 확률을 바꾸면 저장된 값에 새 확률이 적용됩니다.
+ * 모드 제거·순서 변경·다른 스탯 추가 모드 설치·게임 업데이트 전에는
+ * 대기 아이템을 모두 처리하고 캐릭터와 공유 보관함을 백업하세요.
+ *
+ * 우리 모드는 Relics of Sanctuary 뒤에 설치하세요. 아래 호환 처리는
+ * 완전히 동일한 item-mythic 중복만 대상으로 하며, 모든 모드 호환을 보장하지 않습니다.
+ * 쓰는 파일: misc/itemtypes/itemstatcost/properties/cubemain TSV,
+ * item-runes.json 문자열, hd/items/items.json 자산 참조입니다.
+ * armor/weapons는 코드 충돌 검사에만 사용합니다. 세이브 파일은 직접 수정하지 않습니다.
  *
  * 아래 순서로 읽으면 됩니다.
  *   1. 설정 검사 → 2. 공통 함수 → 3. 원본 데이터 검사
@@ -136,6 +151,8 @@ function unique(t, key, value) {
 // ── 3. 게임 테이블 읽기 및 충돌 검사 ───────────────────────────
 
 // misc: 룬·주문서·대기 아이템의 기본 정보
+// auto prefix/normcode/ubercode/ultracode는 이 생성기에 필요하지 않습니다.
+// 일부 조사용 수정 테이블에만 있는 열을 순정 misc의 필수 열로 요구하지 않습니다.
 const misc = load('misc', [
   'code', 'namestr', 'type', 'type2', 'compactsave', 'invfile',
   'flippyfile', 'useable', 'stackable', 'spawnable',
@@ -178,8 +195,8 @@ if (!stats.headers.includes(statIDColumn)) {
   fail('itemstatcost requires ID or *ID.');
 }
 
-// 스탯 ID는 행 위치와 연결됩니다. 기존 행 사이에 끼워 넣지 않습니다.
-// 기존 ID가 순서대로 있는지 확인하고 맨 끝에 새 스탯을 추가합니다.
+// 실제 스탯 ID는 행 위치입니다. *ID/ID 참고값과의 일치는 검사하지 않습니다.
+// 기존 행·주석값·순서를 보존하고 이름의 공백/중복만 검사해 끝에 추가합니다.
 const existingStatNames = new Set();
 stats.rows.forEach((r, i) => {
   if (typeof r.Stat !== 'string' ||
@@ -191,6 +208,8 @@ stats.rows.forEach((r, i) => {
 });
 
 const statID = stats.rows.length;
+// 앞서 설치된 다른 모드가 추가한 스탯도 포함한 위치입니다.
+// 설치 순서가 바뀌면 이 번호도 달라질 수 있으므로 대기 아이템을 남기지 마세요.
 
 // 511은 저장 데이터의 종료 표식이므로 스탯 ID로 사용할 수 없습니다.
 if (statID > 510) {
@@ -210,6 +229,11 @@ for (const [table, key] of [
 }
 
 // Relics of Sanctuary: 동일한 Mythic 속성 중복 등록 대응
+// addMythicProperty()와 addNewItems()의 payload가 같은 속성을 추가하는 경우입니다.
+// 첫 정의는 유지하고 후속 동일 행의 코드만 내부 별칭으로 바꿉니다.
+// 행 삭제/재정렬은 하지 않으며 이름 이외의 값도 그대로 보존합니다.
+// 따라서 기존 숫자 참조의 위치를 유지합니다. 서로 다른 정의는 임의로 병합하지 않습니다.
+// PRG 이름 충돌 검사 후에 별칭을 생성하므로 기존 별칭을 덮어쓰지 않습니다.
 const mythicEntries = props.rows
   .map((row, index) => ({ row, index }))
   .filter(entry => entry.row.code === 'item-mythic');
@@ -340,7 +364,7 @@ add(types, {
 const ranks = Array.from({ length: 32 }, (_, i) => i + 2);
 
 // 등급마다 첫 단계 1행 + 결과 판정 100행을 추가합니다.
-// 이 상한은 시험판의 보수적인 제한이며 현행 엔진 한도를 입증한 값은 아닙니다.
+// 이 상한은 보수적인 안전 제한이며 현행 엔진 한도를 입증한 값은 아닙니다.
 if (cube.rows.length + ranks.length * 101 > 32767) {
   fail('Safety cap: total cube rows exceed 32767.');
 }
@@ -476,6 +500,8 @@ for (const rank of ranks) {
 // ── 7. 생성한 테이블과 문자열 저장 ─────────────────────────────
 
 // 위 검사와 생성이 모두 끝난 뒤 처음으로 파일을 씁니다.
+// API로 파일을 순차 저장하며, 쓰기 중 오류까지 일괄 되돌리는 트랜잭션은 아닙니다.
+// 설치 실패 시 게임을 실행하지 말고 오류를 확인한 뒤 D2RMM에서 다시 설치하세요.
 Object.keys(files).forEach(path => {
   D2RMM.writeTsv(path, files[path], { addCarriageReturns: true });
 });

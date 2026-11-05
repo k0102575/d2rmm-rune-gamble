@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0 documentation and minimal package — 2026-11-05
+
+- Add a mods-only installation ZIP containing mod.js, mod.json and the MIT notice.
+- Clarify runtime comments about stat IDs, saved draw values, Relics compatibility and installation writes; executable tokens are unchanged from v0.1.0.
+- Preserve the original release ZIP and tag; add the minimal ZIP as a separate asset.
+
 ## 0.1.0 — 2026-11-04
 
 - Set the mod name to Probabilistic Rune Downgrade and author to 빵길빵길.

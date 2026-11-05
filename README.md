@@ -15,6 +15,8 @@
 
 ## 설치
 
+간편 설치용은 `ProbabilisticRuneDowngrade-0.1.0-mods-only.zip`입니다. `mods` 폴더와 모드 파일·라이선스만 포함하며, D2RMM 실행파일이 있는 폴더에 압축을 풀면 `mods/ProbabilisticRuneDowngrade/`로 배치됩니다. 별도 개발 문서를 복사할 필요는 없습니다. 압축 해제 도구가 ZIP 이름의 바깥 폴더를 자동 생성하지 않는지 확인하세요. 기존 문서 포함 ZIP도 계속 제공합니다.
+
 1. 게임을 종료하고 오프라인 캐릭터와 공유 보관함을 백업합니다.
 2. `ProbabilisticRuneDowngrade-0.1.0.zip`을 D2RMM 루트 폴더에 풉니다. `mods/ProbabilisticRuneDowngrade/mod.json`이 있어야 합니다.
 3. D2RMM 1.9 이상에서 **Probabilistic Rune Downgrade**를 선택하고 확률을 설정합니다.

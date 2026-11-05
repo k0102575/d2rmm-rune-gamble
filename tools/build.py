@@ -36,3 +36,25 @@ with ZipFile(archive) as z:
 digest = hashlib.sha256(archive.read_bytes()).hexdigest()
 (dist/(archive.name+'.sha256')).write_text(digest+'  '+archive.name+'\n')
 print(f'{archive}\nSHA256 {digest}\n{len(manifest)} files verified')
+
+# Minimal distribution: the mods directory and the required MIT notice only.
+# Keep the existing documentation bundle available as a separate archive.
+minimal = dist/f'ProbabilisticRuneDowngrade-{version}-mods-only.zip'
+minimal_files = {str(p.relative_to(root)): p.read_bytes() for p in sorted(mod.rglob('*')) if p.is_file()}
+minimal_files['mods/ProbabilisticRuneDowngrade/LICENSE.txt'] = (root/'LICENSE').read_bytes()
+with ZipFile(minimal, 'w', compression=ZIP_DEFLATED) as z:
+    for name, data in sorted(minimal_files.items()):
+        info = ZipInfo(name, date_time=(2026,11,2,0,0,0))
+        info.compress_type = ZIP_DEFLATED
+        info.external_attr = 0o100644 << 16
+        z.writestr(info, data)
+with ZipFile(minimal) as z:
+    assert z.testzip() is None
+    assert set(z.namelist()) == set(minimal_files)
+    for name, data in minimal_files.items():
+        assert name.startswith('mods/ProbabilisticRuneDowngrade/')
+        assert '..' not in name.split('/')
+        assert z.read(name) == data
+minimal_digest = hashlib.sha256(minimal.read_bytes()).hexdigest()
+(dist/(minimal.name+'.sha256')).write_text(minimal_digest+'  '+minimal.name+'\n')
+print(f'{minimal}\nSHA256 {minimal_digest}\n{len(minimal_files)} installation files verified')
