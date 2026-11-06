@@ -2,3 +2,6 @@ dist/
 __pycache__/
 .DS_Store
 work/
+
+# Internal working notes retained only in this cloud workspace
+.private/
