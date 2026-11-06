@@ -1,0 +1,14 @@
+{
+  "description": "AI-assisted rune dismantling hammer icon based on Horadric Malus; approved cyan compact version.",
+  "reference": "https://github.com/viniciusamelio/d2r_items_images/blob/master/Horadric%20Malus.png",
+  "sourcePngSha256": "cf2b527bbae43cc56bdf9842e0510b9093629333a9609d9f797b1c8a6515b23b",
+  "format": "SPa1 RGBA v31; 98x98 and 49x49; transparency preserved",
+  "files": {
+    "hd/global/ui/items/misc/prg/dismantling_hammer.sprite": {
+      "sha256": "82176b9dcdc91b9ecd39681da1b8b73af32bb8116afaed745a317e150f7b08c0"
+    },
+    "hd/global/ui/items/misc/prg/dismantling_hammer.lowend.sprite": {
+      "sha256": "29096da1d63e7e8d56fc53919c9e7d7a840a15abdab33d87a79cbd7796f34dbb"
+    }
+  }
+}

@@ -17,3 +17,12 @@ The 32 Eld–Zod HD inventory icons and their low-resolution variants are includ
 The two-stage crafting idea was inspired by **Corruption Shards for RoTW** by **rogeriogmm**. No code, images or files from that mod are included. This credit does not imply endorsement.
 
 https://www.nexusmods.com/diablo2resurrected/mods/1051
+
+## Rune Dismantling Hammer icon / 룬 분해 망치 아이콘
+
+The compact cyan hammer icon was generated and edited with AI assistance using the Horadric Malus silhouette as a reference. The reference PNG was obtained from:
+https://github.com/viniciusamelio/d2r_items_images/blob/master/Horadric%20Malus.png
+
+Diablo II game art and the underlying Horadric Malus design belong to their respective rights holders. This attribution does not claim an independent permission grant or MIT relicensing of the original game art. Only the newly prepared hammer sprites are bundled; the source project's other files are not included. The hammer's in-game ground model is referenced from the user's installed game during D2RMM installation, not distributed here.
+
+호라드림 망치 외형을 참고해 AI로 제작·수정한 전용 아이콘입니다. 게임 원본 아트의 권리를 새로 주장하거나 원본에 MIT를 적용하지 않습니다. 새로 준비한 sprite만 포함하며 원본 프로젝트의 다른 파일은 배포하지 않습니다.

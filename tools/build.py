@@ -15,7 +15,9 @@ dist = root / 'dist'
 dist.mkdir(exist_ok=True)
 runtime = {f'mods/{mod.name}/{name}': (mod/name).read_bytes() for name in ['mod.js', 'mod.json']}
 runtime[f'mods/{mod.name}/CREDITS.md'] = (mod/'CREDITS.md').read_bytes()
-assets = json.loads((mod/'research/glowing-runes.json').read_text())['files']
+assets = {}
+for name in ['glowing-runes.json', 'hammer-icon.json']:
+    assets.update(json.loads((mod/'research'/name).read_text())['files'])
 actual_assets = {p.relative_to(mod).as_posix() for p in (mod/'hd').rglob('*') if p.is_file()}
 assert actual_assets == set(assets), 'Unexpected or missing bundled assets'
 for name, info in sorted(assets.items()):

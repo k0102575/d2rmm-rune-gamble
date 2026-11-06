@@ -97,3 +97,13 @@ mods-only ZIP은 mods/ProbabilisticRuneDowngrade 아래의 mod.js/mod.json/LICEN
 공식 D2RMM API의 copyFile(src,dst,overwrite)로 포함 파일을 복사한다. 공식 소스 `src/main/worker/BridgeAPI.ts`의 extractSprite는 misc 아이템에 `hd/global/ui/items/misc/${asset}.lowend.sprite`를 사용한다. 확인한 D2RMM 커밋은 826ace147d8ff2303cd7a4b323de25a477d9409c이다. 새 대기 HD asset은 rune/prg_pending_<등급>이며 원래 룬의 매핑·invfile·flippyfile은 변경하지 않는다.
 
 HD 바닥 모델에도 같은 asset 이름이 사용되므로 설치 중 현재 입력 룬의 hd/items/misc/<asset>.json을 읽어 새 경로에 연결한다. 모델 파일 자체를 배포하거나 다른 모드의 모델 자산을 복사해 저장소에 넣지 않는다. 필요한 모델을 읽을 수 없으면 설치를 중단한다. 새 경로의 실제 엔진 렌더링은 사용자 게임에서 검증해야 한다. 기존 확률·레시피·대기 코드·저장 스탯은 바꾸지 않는다.
+
+## 2026-11-06: 분해 망치 실험 브랜치
+
+0.2.0-alpha.1에서 prh(3글자)를 재료 코드로 예약한다. itemtypes의 prgh는 Equiv1=misc, StorePage=misc, Normal=1이며 별도의 저장 스탯을 추가하지 않는다. misc의 새 행은 비퀘스트·비중첩 1×1이다. 기존 hdm 퀘스트 무기의 invfile/flippyfile 및 선택적 소리 필드만 참조하며 퀘스트·장비 기능은 상속하지 않는다. HD 매핑은 misc/prg/dismantling_hammer의 전용 sprite를 가리키고, 설치 시 hdm의 현재 weapon 모델 정의를 misc의 새 경로로 연결한다. 새 일반·저해상도 sprite는 승인된 AI 생성 PNG를 변환한 것이며 research/hammer-icon.json에 해시를 기록한다.
+
+GheedMin/Max=1, GheedMagicMin/Max=0, GheedMagicLvl=255, PermStoreItem=1, multibuy=0, NightmareUpgrade/HellUpgrade=xxx로 설정한다. NPC 전역 표와 TC를 변경하지 않는다. 기드의 실제 재고·모든 난이도 판매는 게임 확인 대상이다.
+
+기본 cost=1에 대한 참고 근거는 ThePhrozenKeep/D2MOO의 source/D2Common/src/Items/Items.cpp, ITEMS_CalculateTransactionCost이다. 구버전 복원 코드에서는 NPC·퀘스트·흥정 계산 후 nCost<1이면 1로 보정한다. https://github.com/ThePhrozenKeep/D2MOO/blob/master/source/D2Common/src/Items/Items.cpp . 이는 현행 D2R 엔진의 동작을 직접 검증한 근거가 아니므로 구매·판매 1골드는 게임에서 확인해야 한다.
+
+첫 입력과 꽝 출력만 isc에서 prh로 바꾸고 기존 조합 행 수·확률·prg_roll·pg0~pgv는 유지한다. Corruption Shards ZIP이나 코드는 이 구현에 사용하지 않았다. 제작자의 크레딧 동의 및 필요시 코드 사용 허락은 사용자 제공 답변으로 확인했으며, 실제 코드를 사용했다고 기록하지 않는다.

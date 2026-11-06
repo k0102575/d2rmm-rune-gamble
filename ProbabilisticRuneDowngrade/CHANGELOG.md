@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0-alpha.1 — 2026-11-06
+
+- Replace the Identify Scroll ingredient with a non-stackable 1×1 Rune Dismantling Hammer, configured for sale by Gheed in all difficulties.
+- Return one hammer instead of a scroll on a miss; retain all four default percentages and rune quantities.
+- Add the approved cyan AI-assisted hammer icon in both HD resolutions and preserve the original quest Malus.
+- Set base cost to 1 without editing global NPC prices. Actual purchase/resale prices and stock require in-game validation.
+- Preserve pending item codes and saved-roll stats. Resolve pending items and back up saves before updating because the miss result changes.
+- Pass 58 automated checks; no D2RMM app/game validation claimed.
+
 ## 0.1.1 — 2026-11-06
 
 - Add 바론9’s Glowing Runes HD icons exclusively to pending downgrade items, with source attribution and both sprite resolutions.

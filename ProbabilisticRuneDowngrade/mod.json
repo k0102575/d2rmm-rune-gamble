@@ -1,8 +1,8 @@
 {
   "name": "Probabilistic Rune Downgrade",
-  "description": "악마술사의 군림 전용 / Reign of the Warlock ONLY. Offline two-step rune downgrade, Eld–Zod. 네 확률 합계는 100. 모드 구성 변경 전 대기 아이템을 모두 처리하세요.",
+  "description": "악마술사의 군림 오프라인 전용. 기드의 룬 분해 망치 + 룬으로 두 단계 분해 / Gheed's dismantling hammer + rune. 확률 합계 100.",
   "author": "빵길빵길",
-  "version": "0.1.1",
+  "version": "0.2.0-alpha.1",
   "config": [
     {
       "id": "doubleChance",
@@ -31,7 +31,7 @@
     {
       "id": "missChance",
       "type": "number",
-      "name": "꽝: 감별 주문서 / Miss: identify scroll (%)",
+      "name": "꽝: 망치 반환 / Miss: return hammer (%)",
       "defaultValue": 15,
       "minValue": 0,
       "maxValue": 100

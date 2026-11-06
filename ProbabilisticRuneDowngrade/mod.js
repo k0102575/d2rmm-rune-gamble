@@ -1,6 +1,6 @@
 /*
  * 확률형 룬 분해 모드 — 악마술사의 군림 전용
- * Probabilistic Rune Downgrade 0.1.1 / 제작자: 빵길빵길
+ * Probabilistic Rune Downgrade 0.2.0-alpha.1 / 제작자: 빵길빵길
  * 오프라인 D2RMM 데이터 모드입니다. 엘드~조드 전체 등급을 생성합니다.
  *
  * 이 파일은 D2RMM의 '모드 설치' 버튼을 누를 때 실행됩니다.
@@ -8,13 +8,13 @@
  * 여기서는 게임이 사용할 아이템과 조합법을 만들어 둡니다.
  *
  * 게임 안의 흐름:
- *   룬 1개 + 감별 주문서 1개
+ *   룬 1개 + 룬 분해 망치 1개
  *     → 분해 대기 아이템 (게임 엔진이 추첨값 1~100을 부여)
  *     → 대기 아이템만 다시 조합
  *     → 추첨값에 해당하는 결과 지급
  *
- * 기본 확률: 하위 룬 2개 50%, 1개 25%, 원래 룬 10%, 주문서(꽝) 15%.
- * 첫 조합에서 룬과 주문서를 소비하며 성공/유지에는 주문서를 돌려주지 않습니다.
+ * 기본 확률: 하위 룬 2개 50%, 1개 25%, 원래 룬 10%, 망치 반환(꽝) 15%.
+ * 첫 조합에서 룬과 망치를 소비하며 성공/유지에는 망치를 돌려주지 않습니다.
  * 추첨값은 첫 조합에서 저장됩니다. 두 번째 조합은 새로 추첨하지 않습니다.
  * 대기 아이템을 남긴 채 확률을 바꾸면 저장된 값에 새 확률이 적용됩니다.
  * 모드 제거·순서 변경·다른 스탯 추가 모드 설치·게임 업데이트 전에는
@@ -71,12 +71,13 @@ const prefix = 'global\\excel\\';
 // 수정할 테이블을 모아 두었다가 마지막 단계에서 저장합니다.
 // HD 아이템 매핑은 3글자 코드만 지원합니다. pg0~pgv를 예약합니다.
 // itemtypes 종류 식별자 prgp(4글자)는 실제 아이템 코드와 별개입니다.
+const hammerCode = 'prh';
 const pendingCodes = new Set(
   Array.from({ length: 32 }, (_, i) => 'pg' + i.toString(36)),
 );
 const reservedCode = value => {
   const code = String(value).toLowerCase();
-  return code.startsWith('prg') || pendingCodes.has(code);
+  return code.startsWith('prg') || code === hammerCode || pendingCodes.has(code);
 };
 
 const files = {};
@@ -156,13 +157,15 @@ function unique(t, key, value) {
 const misc = load('misc', [
   'code', 'namestr', 'type', 'type2', 'compactsave', 'invfile',
   'flippyfile', 'useable', 'stackable', 'spawnable',
-  'spelldesc', 'spelldescstr', 'gemsockets',
+  'spelldesc', 'spelldescstr', 'gemsockets', 'cost', 'quest',
+  'GheedMin', 'GheedMax', 'GheedMagicMin', 'GheedMagicMax', 'GheedMagicLvl',
+  'PermStoreItem', 'multibuy', 'NightmareUpgrade', 'HellUpgrade',
 ]);
 
 // itemtypes: 아이템 종류 / itemstatcost: 아이템에 저장되는 속성 정의
 const types = load('itemtypes', [
   'Code', 'ItemType', 'Equiv1', 'Equiv2', 'Normal', 'Body',
-  'Magic', 'Rare', 'TreasureClass', 'VarInvGfx',
+  'Magic', 'Rare', 'TreasureClass', 'VarInvGfx', 'StorePage',
 ]);
 
 const stats = load('itemstatcost', [
@@ -260,11 +263,6 @@ if (cube.rows.some(r => String(r.description).startsWith('PRDG:'))) {
   fail('Recipes already installed in input data. Rebuild from original game data.');
 }
 
-const scroll = unique(misc, 'code', 'isc');
-
-if (scroll.stackable !== '0') {
-  fail('Stacked identify scrolls are unsupported.');
-}
 
 for (let rank = 1; rank <= 33; rank++) {
   const r = unique(misc, 'code', 'r' + String(rank).padStart(2, '0'));
@@ -364,6 +362,55 @@ add(types, {
 const ranks = Array.from({ length: 32 }, (_, i) => i + 2);
 
 const pendingModels = {};
+
+// 별도 비퀘스트 재료: 원래 호라드림 망치의 행·HD 매핑은 수정하지 않습니다.
+const sourceHammer = unique(weapons, 'code', 'hdm');
+const sourceHammerHD = hd.find(entry => entry.hdm)?.hdm;
+if (!sourceHammer.invfile || !sourceHammer.flippyfile || !sourceHammerHD?.asset) {
+  fail('Required Horadric Malus graphics missing.');
+}
+let hammerModel;
+try {
+  hammerModel = D2RMM.readJson('hd\\items\\weapon\\' + sourceHammerHD.asset + '.json');
+} catch (e) {
+  fail('Required Horadric Malus HD model missing: ' + e);
+}
+if (!hammerModel || typeof hammerModel !== 'object' || Array.isArray(hammerModel)) {
+  fail('Unsupported Horadric Malus HD model.');
+}
+const hammerAsset = 'prg/dismantling_hammer';
+pendingModels['hd\\items\\misc\\' + hammerAsset + '.json'] = hammerModel;
+const hammerHD = JSON.parse(JSON.stringify(sourceHammerHD));
+hammerHD.asset = hammerAsset;
+hd.push({ [hammerCode]: hammerHD });
+text('PRGHammer', 'Rune Dismantling Hammer', '룬 분해 망치');
+text('PRGHammerHelp', 'Transmute with one rune (Eld-Zod). Consumed; returned on a miss.',
+  '엘드~조드 룬 1개와 조합. 소모되며 꽝일 때 망치만 반환됩니다.');
+add(types, {
+  ItemType: 'PRG Dismantling Material', Code: 'prgh', Equiv1: 'misc',
+  Normal: '1', Body: '0', Magic: '0', Rare: '0', TreasureClass: '0',
+  VarInvGfx: '0', StorePage: 'misc',
+});
+const hammer = add(misc, {
+  name: 'PRGHammer', code: hammerCode, namestr: 'PRGHammer', type: 'prgh',
+  compactsave: '0', version: '0', level: '1', levelreq: '0', rarity: '1',
+  spawnable: '1', nodurability: '1', cost: '1', component: '16',
+  invwidth: '1', invheight: '1', hasinv: '0', gemsockets: '0', useable: '0',
+  stackable: '0', minstack: '0', maxstack: '0', spawnstack: '0',
+  unique: '0', quest: '0', questdiffcheck: '0', belt: '0', autobelt: '0',
+  spelldesc: '1', spelldescstr: 'PRGHammerHelp', pSpell: '-1', spellicon: '-1',
+  invfile: sourceHammer.invfile, flippyfile: sourceHammer.flippyfile,
+  // PermStoreItem은 비중첩 아이템도 재구매할 수 있게 합니다.
+  GheedMin: '1', GheedMax: '1', GheedMagicMin: '0', GheedMagicMax: '0', GheedMagicLvl: '255',
+  PermStoreItem: '1', multibuy: '0', NightmareUpgrade: 'xxx', HellUpgrade: 'xxx',
+});
+for (const field of ['normcode', 'ubercode', 'ultracode']) {
+  if (misc.headers.includes(field)) hammer[field] = hammerCode;
+}
+for (const field of ['alternategfx', 'dropsound', 'dropsfxframe', 'usesound']) {
+  if (misc.headers.includes(field)) hammer[field] = sourceHammer[field] ?? '';
+}
+if (misc.headers.includes('AdvancedStashStackable')) hammer.AdvancedStashStackable = '0';
 
 // 등급마다 첫 단계 1행 + 결과 판정 100행을 추가합니다.
 // 이 상한은 보수적인 안전 제한이며 현행 엔진 한도를 입증한 값은 아닙니다.
@@ -465,7 +512,7 @@ for (const rank of ranks) {
   pendingHD.asset = pendingAsset;
   hd.push({ [pending]: pendingHD });
 
-  // 첫 번째 조합: 룬 + 감별 주문서 → 추첨값을 가진 대기 아이템
+  // 첫 번째 조합: 룬 + 룬 분해 망치 → 추첨값을 가진 대기 아이템
   // mod 1 chance=100은 '스탯을 항상 붙인다'는 뜻입니다.
   // 네 결과의 확률은 여기서 따로 굴리지 않고 아래의 값 구간으로 나눕니다.
   add(cube, {
@@ -474,7 +521,7 @@ for (const rank of ranks) {
     version: '100',
     numinputs: '2',
     'input 1': rune,
-    'input 2': 'isc',
+    'input 2': hammerCode,
     output: pending + ',nor',
     lvl: '1',
     'mod 1': 'prg_roll',
@@ -508,7 +555,7 @@ for (const rank of ranks) {
       op: '18',
       param: String(statID),
       value: String(roll),
-      output: outcome < 2 ? lower : outcome === 2 ? rune : 'isc',
+      output: outcome < 2 ? lower : outcome === 2 ? rune : hammerCode,
       'output b': outcome === 0 ? lower : '',
     });
   }
@@ -525,6 +572,7 @@ D2RMM.copyFile(
   'hd\\global\\ui\\items\\misc\\rune',
   true,
 );
+D2RMM.copyFile('hd\\global\\ui\\items\\misc\\prg', 'hd\\global\\ui\\items\\misc\\prg', true);
 Object.keys(pendingModels).forEach(path => {
   D2RMM.writeJson(path, pendingModels[path]);
 });
