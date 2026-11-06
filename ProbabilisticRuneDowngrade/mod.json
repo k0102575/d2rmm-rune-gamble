@@ -2,7 +2,7 @@
   "name": "Probabilistic Rune Downgrade",
   "description": "악마술사의 군림 오프라인 전용. 기드의 룬 분해 망치 + 룬으로 두 단계 분해 / Gheed's dismantling hammer + rune. 확률 합계 100.",
   "author": "빵길빵길",
-  "version": "0.2.0-alpha.1",
+  "version": "0.2.0",
   "config": [
     {
       "id": "doubleChance",

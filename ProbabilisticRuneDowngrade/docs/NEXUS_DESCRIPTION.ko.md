@@ -1,6 +1,6 @@
 # Probabilistic Rune Downgrade — 확률형 룬 분해
 
-제작자 **k0102575 (빵길빵길)** · 버전 **0.2.0-alpha.1** · **악마술사의 군림 오프라인 전용** · D2RMM **1.9+**
+제작자 **k0102575 (빵길빵길)** · 버전 **0.2.0** · **악마술사의 군림 오프라인 전용** · D2RMM **1.9+**
 
 엘드부터 조드까지 룬을 네 가지 결과 중 하나로 분해합니다. 룬 1개와 룬 분해 망치 1개를 조합하고, 만들어진 분해 대기 아이템만 다시 조합하세요.
 
@@ -40,7 +40,7 @@ AI 지원으로 제작한 청록색 망치 아이콘과 HD 두 해상도 sprite�
 ## 설치
 
 1. 게임을 종료하고 오프라인 캐릭터·공유 보관함을 백업합니다.
-2. `ProbabilisticRuneDowngrade-0.2.0-alpha.1-mods-only.zip`을 D2RMM 실행파일이 있는 폴더에 풉니다. `mods/ProbabilisticRuneDowngrade/mod.json`을 확인하세요. ZIP 이름의 바깥 폴더가 추가되면 안 됩니다. 문서 포함 ZIP도 대안이며 둘 중 하나만 설치합니다.
+2. `ProbabilisticRuneDowngrade-0.2.0-mods-only.zip`을 D2RMM 실행파일이 있는 폴더에 풉니다. `mods/ProbabilisticRuneDowngrade/mod.json`을 확인하세요. ZIP 이름의 바깥 폴더가 추가되면 안 됩니다. 문서 포함 ZIP도 대안이며 둘 중 하나만 설치합니다.
 3. D2RMM 1.9+에서 모드를 선택하고 확률을 설정합니다.
 4. Relics of Sanctuary 병용 시 우리 모드를 **Relics 뒤**에 배치하고 **Install Mods**를 실행합니다.
 5. D2RMM 설정에 맞게 오프라인 게임을 실행하고 시험용 세이브 복사본으로 먼저 확인합니다.

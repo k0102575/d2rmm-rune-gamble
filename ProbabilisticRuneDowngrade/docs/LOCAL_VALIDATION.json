@@ -1,9 +1,9 @@
 {
   "inputs": {
-    "ProbabilisticRuneDowngrade/mod.js": "b67f963491960ccd38f67834bccd64ac40a516da2b8e97f469dee7298beef178",
-    "ProbabilisticRuneDowngrade/mod.json": "5d28e2f424b7262a8b643945fc8aea686a886a1c7815a908fc64f06bc7e6048d",
+    "ProbabilisticRuneDowngrade/mod.js": "b50addc0858d9db94c07e8cdd156195c8f091caee909ef966217de55af2199a8",
+    "ProbabilisticRuneDowngrade/mod.json": "b7a1388da0ef2e6f0fc8e86b02389bc3ec56bbcf908afbd9699a17df5d9e1e41",
     "ProbabilisticRuneDowngrade/research/schema.json": "c7e5a39958a23432062851714ebf2857d9e888cd31fa462108c2512306974709",
-    "tools/verify.mjs": "5b947ca4271c06759d689b8620ed09adc095828b72d524a7b576360860e4923f",
+    "tools/verify.mjs": "5e4155c4b7f2a73edec9e33bc8052eb4fd436bb8ae03db3c13562c12634e6eb2",
     "ProbabilisticRuneDowngrade/research/glowing-runes.json": "e46e123193a44cc29c1d3588574b090a1859b4fa54f328cb1f625b2034aba3de",
     "ProbabilisticRuneDowngrade/research/hammer-icon.json": "6dfc1fff0e2da88c68d96ac7e45955a02b09faead65b22d5a089615af6743aeb"
   },

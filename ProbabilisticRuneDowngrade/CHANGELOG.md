@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0 — 2026-11-07
+
+- Promote the tested hammer version to 0.2.0 with default name coloring. Gameplay and assets are unchanged from the tested alpha.
+- Record author-reported Gheed sales, 1-gold purchase/resale, four outcomes, ground display and save/reload checks with D2RMM 1.9.0 and game 3.3 alongside other mods.
+- Pass 58 automated checks and installation ZIP validation. Game 3.4 and classic rendering remain unverified.
+
 ## 0.2.0-alpha.1 — 2026-11-06
 
 - Restore the default hammer name display without an explicit color code in all languages (2026-11-07); item codes and recipes are unchanged.
