@@ -68,6 +68,6 @@ Relics가 완전히 같은 `item-mythic` 속성을 두 번 등록하면 두 번�
 
 저장소 루트에서 Node.js 18+로 `node tools/verify.mjs`, Python 3에서 `python3 tools/build.py`를 실행합니다. 합성 fixture로 설치 생성기를 검사하고 ZIP 내부 파일별 SHA-256 및 ZIP 자체의 SHA-256 파일을 생성합니다. 공개 조사 테이블이 준비된 경우에만 해당 원문을 사용하는 별도 검사를 실행합니다. 게임 원본 테이블·이미지 및 타 모드 소스를 배포하지 않습니다.
 
-GitHub Actions는 mod.json 버전과 일치하는 v 접두사 태그에서 검증 및 ZIP 빌드를 수행합니다. 로컬 빌드만으로 원격 공개 릴리스가 생성되는 것은 아닙니다.
+GitHub Actions는 소스 변경 시 검증과 ZIP 생성 확인만 수행하며, GitHub Releases에 파일을 게시하지 않습니다. 이용자용 배포는 Nexus를 준비 중입니다.
 
 MIT 라이선스는 이 저장소에서 작성한 코드와 문서에 적용합니다. Diablo II 및 게임 자산의 권리는 각 권리자에게 있습니다.
