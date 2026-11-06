@@ -6,6 +6,7 @@ permissions:
   contents: write
 jobs:
   upload:
+    if: github.repository == 'k0102575/d2rmm-rune-gamble'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -31,8 +32,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          TAG=ProbabilisticRuneDowngrade-v0.1.1
-          gh release create "$TAG" --target 7dbe4b5a902fe697cb3db24aa047e0fbae453476 \
+          TAG=v0.1.1
+          gh release create "$TAG" --target "${{ github.sha }}" \
             --draft --prerelease --title 'Probabilistic Rune Downgrade 0.1.1' \
             --notes-file .release-upload/notes.md
           gh release upload "$TAG" \
@@ -40,3 +41,16 @@ jobs:
             .release-upload/ProbabilisticRuneDowngrade-0.1.1-mods-only.zip.sha256 \
             .release-upload/CREDITS.md .release-upload/LICENSE.txt
           gh release edit "$TAG" --draft=false --prerelease
+
+  cleanup-wrong-target:
+    if: github.repository == 'k0102575/diablo2-mods'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove release published to the wrong repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          RELEASE_ID=$(gh api repos/k0102575/diablo2-mods/releases/tags/ProbabilisticRuneDowngrade-v0.1.1 --jq .id)
+          test "$RELEASE_ID" = 436644322
+          gh release delete ProbabilisticRuneDowngrade-v0.1.1 --yes --cleanup-tag
