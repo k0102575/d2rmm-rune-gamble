@@ -1,6 +1,6 @@
 # Probabilistic Rune Downgrade
 
-By **k0102575** · Version **0.1.0** · **Offline Reign of the Warlock only** · D2RMM **1.9+**
+By **k0102575** · Version **0.1.1** · **Offline Reign of the Warlock only** · D2RMM **1.9+**
 
 Downgrade Eld through Zod with four configurable outcomes. Use one rune and one loose Scroll of Identify, then transmute the pending item alone to receive the result.
 
@@ -23,10 +23,14 @@ All **32 input ranks, Eld (r02) through Zod (r33)**, are enabled. El (r01) canno
 
 The pending item stores a roll from 1 to 100 when first created. The second transmutation resolves that stored roll into one of the four outcomes; it does not roll again. This provides four mutually exclusive outcomes with configurable percentages using generated cube recipes.
 
+## Pending item icons
+
+Pending items use **Glowing Runes** icons by **바론9**. Normal and resulting runes keep their installed icons. Eld–Ral have only subtle visual differences; identify pending items by the **“— Pending Downgrade”** name. Both HD sprite resolutions are included. Classic graphics retain the input rune icon.
+
 ## Installation
 
 1. Close the game and back up offline characters and the shared stash.
-2. Extract `ProbabilisticRuneDowngrade-0.1.0-mods-only.zip` into the folder containing D2RMM. Confirm `mods/ProbabilisticRuneDowngrade/mod.json` exists, without an extra enclosing ZIP-name folder. The documentation ZIP is an alternative; install only one package.
+2. Extract `ProbabilisticRuneDowngrade-0.1.1-mods-only.zip` into the folder containing D2RMM. Confirm `mods/ProbabilisticRuneDowngrade/mod.json` exists, without an extra enclosing ZIP-name folder. The documentation ZIP is an alternative; install only one package.
 3. In D2RMM 1.9+, enable **Probabilistic Rune Downgrade** and set the four chances.
 4. If using Relics of Sanctuary, place this mod **after Relics** in the install order. Click **Install Mods**.
 5. Launch the offline game with your D2RMM configuration. Use a copy of your save for initial checks.
@@ -43,7 +47,7 @@ The Relics compatibility handling renames only later, identical `item-mythic` pr
 
 ## Validation scope
 
-The author reported the following offline in-game checks. Outcome order below is **two lower / one lower / returned rune / miss**.
+The following author-reported game checks used **0.1.0, before the icon change**. **The new icons, ground display and save/reload behavior of 0.1.1 have not yet been tested in-game.** Outcome order below is **two lower / one lower / returned rune / miss**.
 
 | Environment | Chances | Trials / result |
 |---|---|---|
@@ -54,12 +58,13 @@ The author reported the following offline in-game checks. Outcome order below is
 
 The combined setup included Relics of Sanctuary, Corruption Shards for RoTW, and rune stacking. Checks also covered descending from Zod to El, runewords, rune storage and stacking, existing upgrade recipes, socket use, save/reload, and resolving a pending item after save/reload. The exact game build and complete active mod list were not recorded. These samples do not prove the random distribution or universal compatibility.
 
-**Automated checks:** 42 generator checks using synthetic fixtures cover all ranks and stored rolls, settings validation and compatibility cases. Each of the four configurations with exactly one outcome at 0% and all others positive passed automated checks. **Their combined-mod in-game tests remain incomplete. Game version 3.4 has not been verified.** Automated checks do not run D2RMM or the game.
+**Automated checks:** 45 generator checks using synthetic fixtures cover all ranks and stored rolls, settings validation and compatibility cases. Each of the four configurations with exactly one outcome at 0% and all others positive passed automated checks. **Their combined-mod in-game tests remain incomplete. Game version 3.4 has not been verified.** Automated checks do not run D2RMM or the game.
 
 ## Credits and disclosure
 
 - Mod author: **k0102575**.
 - The two-stage crafting idea was inspired by **Corruption Shards for RoTW**, by **rogeriogmm**: https://www.nexusmods.com/diablo2resurrected/mods/1051 . Its original code, images and files are not included in this distribution. This credit does not imply endorsement or permission granted by its author.
+- Pending icons: **Glowing Runes / 빛나는 룬 아이콘** by **바론9**, https://www.inven.co.kr/board/diablo2/5734/1634 . Included unchanged under the source post’s permission to integrate and distribute with credit. These assets are not relicensed under MIT; see CREDITS.md in the mod folder.
 - Uses D2RMM. Diablo II and its game assets belong to their respective rights holders. This repository's original code and documentation are under the MIT License; this does not license third-party game assets.
 - AI assistance was used to prepare and translate this description. The in-game test results above were reported by the author; AI-generated text is not evidence of game testing.
 

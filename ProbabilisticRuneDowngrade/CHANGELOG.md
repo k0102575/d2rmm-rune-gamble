@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 — 2026-11-06
+
+- Add 바론9’s Glowing Runes HD icons exclusively to pending downgrade items, with source attribution and both sprite resolutions.
+- Preserve normal rune icons, classic icons, drop-model definitions, recipes, probabilities, pending item codes and saved-roll format.
+- Include sprite assets and third-party credits in both installation ZIPs.
+- Add icon isolation, source integrity and missing-model checks; 45 automated checks pass. New visuals and model aliases require in-game validation.
+
 ## 0.1.0 publication documentation — 2026-11-06
 
 - Use k0102575 as the public author name, with 빵길빵길 in Korean documentation; retain the existing mod.json author value.

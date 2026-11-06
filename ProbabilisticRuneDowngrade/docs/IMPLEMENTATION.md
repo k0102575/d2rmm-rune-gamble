@@ -89,3 +89,11 @@ mod.json 이름 Probabilistic Rune Downgrade, author 빵길빵길, version 0.1.0
 ## 2026-11-05: 간편 설치 ZIP 및 주석 검토
 
 mods-only ZIP은 mods/ProbabilisticRuneDowngrade 아래의 mod.js/mod.json/LICENSE.txt만 포함한다. 기존 공개 ZIP과 태그는 유지하고 별도 릴리스 자산을 추가한다. mod.js는 ID 참고값을 검사한다던 오래된 주석을 정정하고 추첨 저장 시점·확률 변경 시 재해석·스탯 추가 순서·Relics 중복 처리 범위·쓰기 실패 시 주의사항을 보완했다. 공개 v0.1.0 소스와 주석/공백을 제외한 실행 토큰이 같은지 확인했고 생성기 38개 검사 및 제공 TSV 4개를 이용한 병용 생성 검사를 통과했다. 실행 동작 변경은 없다.
+
+## 2026-11-06: 0.1.1 분해 대기 전용 HD 아이콘
+
+바론9의 GlowingRunes_2_0.zip 중 엘드~조드 일반/lowend sprite 64개를 원본 바이트 그대로 포함하고 이름만 prg_pending_02~33으로 분리한다. 허용 문구·출처·파일별 원본 경로와 해시는 CREDITS.md 및 research/glowing-runes.json에 기록한다. 이 이미지에는 MIT를 새로 적용하지 않는다.
+
+공식 D2RMM API의 copyFile(src,dst,overwrite)로 포함 파일을 복사한다. 공식 소스 `src/main/worker/BridgeAPI.ts`의 extractSprite는 misc 아이템에 `hd/global/ui/items/misc/${asset}.lowend.sprite`를 사용한다. 확인한 D2RMM 커밋은 826ace147d8ff2303cd7a4b323de25a477d9409c이다. 새 대기 HD asset은 rune/prg_pending_<등급>이며 원래 룬의 매핑·invfile·flippyfile은 변경하지 않는다.
+
+HD 바닥 모델에도 같은 asset 이름이 사용되므로 설치 중 현재 입력 룬의 hd/items/misc/<asset>.json을 읽어 새 경로에 연결한다. 모델 파일 자체를 배포하거나 다른 모드의 모델 자산을 복사해 저장소에 넣지 않는다. 필요한 모델을 읽을 수 없으면 설치를 중단한다. 새 경로의 실제 엔진 렌더링은 사용자 게임에서 검증해야 한다. 기존 확률·레시피·대기 코드·저장 스탯은 바꾸지 않는다.

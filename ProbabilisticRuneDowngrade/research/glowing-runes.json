@@ -1,0 +1,265 @@
+{
+  "source": "https://www.inven.co.kr/board/diablo2/5734/1634",
+  "author": "바론9",
+  "archive": "GlowingRunes_2_0.zip",
+  "archiveSha256": "70d2f550886b929341b84d107f920735135bc1cd2868c90266666feffc56afb6",
+  "permission": "다른 모드에 통합해서 배포하셔도 됩니다. 출처만 표기해주세요.",
+  "files": {
+    "hd/global/ui/items/misc/rune/prg_pending_02.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/eld_rune.sprite",
+      "sha256": "7fb7d490d7990eaa21e907670a4aaa7244b77b4ad98a98d3e1ea3318ee8a6ff1"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_02.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/eld_rune.lowend.sprite",
+      "sha256": "e4d2bc2acb3064872a936b13362ba571f4eff1d9d3b41afbd83405865db23557"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_03.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/tir_rune.sprite",
+      "sha256": "c2ef5c9fc1914d51be13ef047a229cdb6b79500eb1ff6fd6d02c5336ccedfca8"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_03.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/tir_rune.lowend.sprite",
+      "sha256": "99368b6e21214014e63edf2e7ef7699f26c439ffcbe998570d3bfdc8453bfeb8"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_04.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/nef_rune.sprite",
+      "sha256": "b3859576629f144d07036193ad23c8552d37fae99e3e0426e43285ede8c62552"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_04.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/nef_rune.lowend.sprite",
+      "sha256": "592f4a03785fa38b2169ee8be83268beb745eeedfcf3e3dc2455f05674f142f8"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_05.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/eth_rune.sprite",
+      "sha256": "e1f22937a8919f51d88179115340216b332de1b3d1d802585842d157a26ef27c"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_05.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/eth_rune.lowend.sprite",
+      "sha256": "e4f66f44f6a02eff0b485c619058c3c465178369fa453ffe32919c373b6384dc"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_06.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ith_rune.sprite",
+      "sha256": "af070b15f5189be9ce4ba8eff13d7555def1951413bf4abeded496fa48c9cade"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_06.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ith_rune.lowend.sprite",
+      "sha256": "651f68d22275e3d602c03222f9fb5894b3e4c18be7824496637ad88736913f57"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_07.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/tal_rune.sprite",
+      "sha256": "e2b203440e06b481821e7fbb997a8de16b3009c4cc08ae6dbaa38b70f86bfd64"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_07.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/tal_rune.lowend.sprite",
+      "sha256": "dc974039122ac9b91513fa2db40656def1bfcc5c6417a8cfbfa4aa9acd15ec11"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_08.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ral_rune.sprite",
+      "sha256": "82332fa394ac49febfc3f0d4dcec91256600b617c64d5f1e9a2cbfbd7819fe9f"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_08.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ral_rune.lowend.sprite",
+      "sha256": "3fee2daef1a3360079a8c7d04e0b6dfcf16fa1650d63f5feff15cf7956ac4f47"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_09.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ort_rune.sprite",
+      "sha256": "4316a2ca01f0b3323138a742e51679bae9bd6915702c19f860abda6857766c35"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_09.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ort_rune.lowend.sprite",
+      "sha256": "8bb207728c5db2492f762c9d643d8010dae19d80df6542cfe526f3fdd0251fc6"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_10.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/thul_rune.sprite",
+      "sha256": "3183f0f433e3e3c055a54f9e3881cbb4e638dec1b1fec4468bb979848563b8e9"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_10.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/thul_rune.lowend.sprite",
+      "sha256": "cbb802a46e88160d48ccae2e4bdfec7d88ca98bb10d6e2b1867c74cf54c07d2b"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_11.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/amn_rune.sprite",
+      "sha256": "5bacef6fbe0809b2b685d986e6220baf96a3558c232d670ee73446e3f6278e64"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_11.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/amn_rune.lowend.sprite",
+      "sha256": "d945d16c614d6381a1cf631163ffa5f6c5d2cf36c0a8f8ed6bc4f3ea62fd3e46"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_12.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/sol_rune.sprite",
+      "sha256": "7e2c2fc1d43c810c710d550552d3d95cebcd7dd673b56b3ccfcb2a45e76d404b"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_12.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/sol_rune.lowend.sprite",
+      "sha256": "09154390922eb54c13a8879f543f1f4af968f809ff6c6fc3bb0fddee48efca8b"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_13.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/shael_rune.sprite",
+      "sha256": "5521582bada2af7837b448cc793387c020792d620c007065084b05595c41437b"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_13.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/shael_rune.lowend.sprite",
+      "sha256": "f922dc98dbebddb6004dbeeea7c1403d4a41db9f687f13b1d7afe5859b91e585"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_14.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/dol_rune.sprite",
+      "sha256": "2f75259e40ee54031e9ac7dd0f1dddc5924b85ad5ee57261ea8b1eb95130577a"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_14.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/dol_rune.lowend.sprite",
+      "sha256": "875b3f66dca5752c5e8f2d8c9ac430d66a7ff7b0e0b6d0a323e8732fd2628906"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_15.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/hel_rune.sprite",
+      "sha256": "a32a2dc8ddff3583249add8e2dc025320160a958faa51ad92c1a6b4900db2dc6"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_15.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/hel_rune.lowend.sprite",
+      "sha256": "2ee1e9cb85c4d5c6097068103c58a86a6f53cff5439f3e74225a5b1876ad31cf"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_16.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/io_rune.sprite",
+      "sha256": "24fcce14a381f992a647df3cac3d66eba68babd82ee89b50b4f686fa87a1961a"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_16.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/io_rune.lowend.sprite",
+      "sha256": "542470fe0cdd335d0c0baddb37be786ef7efa1c333eb7efbd434614970d124d9"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_17.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/lum_rune.sprite",
+      "sha256": "f63cf30b9e10eddb9808760dd7931967fe8eafe2510e8b2c39ea2bd527e770d8"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_17.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/lum_rune.lowend.sprite",
+      "sha256": "3df25f6f4ca2f593176dad7abb9902d6e74c377ec152f2ff7a09877b98f0fed2"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_18.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ko_rune.sprite",
+      "sha256": "80ad62dc46419d108dd04f16ba30844d3d07f75f6b57b8ea7e9197c05cc8abf2"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_18.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ko_rune.lowend.sprite",
+      "sha256": "33787621acb9cc7fb973dc8e20c13a65d093efd9c7798763d339b8c95fca01fb"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_19.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/fal_rune.sprite",
+      "sha256": "7fe7b9970884534bb55352343c1ef1dc4d264106fd3eca7155f1f2f495eb8494"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_19.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/fal_rune.lowend.sprite",
+      "sha256": "2d10a3ac5872417296661ca0e234b969f0b0eccdfa4b18585e19fb77a0daec08"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_20.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/lem_rune.sprite",
+      "sha256": "57e205eefb6f90a344375e995c9be14516b19a28f9e7c7aa9dcc15516d2098d0"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_20.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/lem_rune.lowend.sprite",
+      "sha256": "48b7e5c35c33012376e952bc6de3d52fc2c97158c010f38fd3b4a14cb4de202b"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_21.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/pul_rune.sprite",
+      "sha256": "7e3b42ad4f2e3c2846ba4b12b1c38497020e5a2b4aa6fa3795a60d57872447eb"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_21.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/pul_rune.lowend.sprite",
+      "sha256": "2e8bee8f613cbed7d2c74fa65fd4b63dd0b78e0ddb15fa51761abdde184a0ef5"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_22.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/um_rune.sprite",
+      "sha256": "1d45f53850f39337ca5b22a7575436993316091464aaf483d2988cfac44b27ad"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_22.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/um_rune.lowend.sprite",
+      "sha256": "8668d598d0db6099e4185c7415012ec89e32b3aeb9bc3d9d8a3f341d8e115e9d"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_23.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/mal_rune.sprite",
+      "sha256": "2730414e90079cd6a61ba9567f0491a21abb8b8d21c2161ed31f33ee7f18e53b"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_23.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/mal_rune.lowend.sprite",
+      "sha256": "6f44b626a753a440242c04d31cdce57530fad6769141187d201dfde1728007ed"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_24.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ist_rune.sprite",
+      "sha256": "fe9ea65f53fe1888432b51a793463c23a7e3835e2e974e6bce77556932887ddc"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_24.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ist_rune.lowend.sprite",
+      "sha256": "efbcefc5560a6dd6d58d5453ec84f360419d3143617501257747ed6b9caeb9ba"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_25.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/gul_rune.sprite",
+      "sha256": "ffdde6c658fcf3728e97c2d81dc98282925bfef060f58a20b6e22e5db4e5e189"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_25.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/gul_rune.lowend.sprite",
+      "sha256": "555a0d33f43b3e6bbb3797ed0b9e91ad1a5e50b4731c08916939d5d3b6b4d1fb"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_26.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/vex_rune.sprite",
+      "sha256": "d32245d3f71e7ec16cfeac0b89cb3262326f8b0018d06c3ffb2e0e35e80b7951"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_26.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/vex_rune.lowend.sprite",
+      "sha256": "9b97ef8d4c01dd35df774936cd1a34471aee7d704c2421f3b306f9e838a57c9c"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_27.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ohm_rune.sprite",
+      "sha256": "0ac6c919cf84dc420e10f70d2c837541fec5af08153b3531ab0311abb6b628e0"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_27.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ohm_rune.lowend.sprite",
+      "sha256": "bb5e211459db02d9dea4b977326dc176fde152c4930df637148129ed63bdc146"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_28.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/lo_rune.sprite",
+      "sha256": "0393d8f53982f0404708c3c0a2b056d9f3a9c7f92a76659ab0f32b04993e8c30"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_28.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/lo_rune.lowend.sprite",
+      "sha256": "0613caa5c7added22280d826d216f06337e6a0d3d00c203f8e1de7f9602f13d3"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_29.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/sur_rune.sprite",
+      "sha256": "81155517308b98e8f73286ecbe11e09430d3584628c6c17f3f7d1a61e6465dd4"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_29.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/sur_rune.lowend.sprite",
+      "sha256": "e8fe34884aad0bc5dec2cd6962db52fdbde580bc516ae40b6f0fb15b251a6c26"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_30.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ber_rune.sprite",
+      "sha256": "4aa48a919c877de00969895b0dfc6699cdb5904119c020ae83bcad09144cd91f"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_30.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/ber_rune.lowend.sprite",
+      "sha256": "e5199267490ecad4c6c880141473c95c4b358b28943bab7c8534c506a8898796"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_31.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/jah_rune.sprite",
+      "sha256": "d47dcb8dde81a67b2acc8830cfb9706cb49c35fe125cffbcc06f5258245a6c9f"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_31.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/jah_rune.lowend.sprite",
+      "sha256": "28edf16dd05ab487985abbd977e898b86e5be29f4a9b224c63839bca53d73db6"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_32.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/cham_rune.sprite",
+      "sha256": "6dbaecab45e19e88164801543160739d71ce12c2755b88b905b271eff95419c8"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_32.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/cham_rune.lowend.sprite",
+      "sha256": "f98aedc5912fc869db73e07318a29acd28c06b300ab17b96803406f8f53fa79e"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_33.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/zod_rune.sprite",
+      "sha256": "15a7088df48b2ba4ab9ec018b79d8a9d1dc038f77092995e874c25286e059fef"
+    },
+    "hd/global/ui/items/misc/rune/prg_pending_33.lowend.sprite": {
+      "source": "GlowingRunes/data/hd/global/ui/items/misc/rune/zod_rune.lowend.sprite",
+      "sha256": "56e369a66ee0a9f0cfce9e5926ea84e328432c93783130089dba8b756fd9e68e"
+    }
+  }
+}

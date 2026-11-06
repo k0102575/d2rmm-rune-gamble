@@ -1,12 +1,13 @@
 {
   "inputs": {
-    "ProbabilisticRuneDowngrade/mod.js": "d78238fca79c636ccc6b158c7a7f4293a04e406cf9c986e982d11a251744706f",
-    "ProbabilisticRuneDowngrade/mod.json": "6f47266a92c2ede2a04665b2373853bb698b1f750c0cdaaabb2198e6a5be3b95",
+    "ProbabilisticRuneDowngrade/mod.js": "7800e310125dffc63d350b10373bf660d4804b23ee7a3620776d7d3e4a4a099f",
+    "ProbabilisticRuneDowngrade/mod.json": "c6fcf611891cf5b71919d1a3141a4b8c923105e9e7b1c9c935bece3f4d8e24cf",
     "ProbabilisticRuneDowngrade/research/schema.json": "c7e5a39958a23432062851714ebf2857d9e888cd31fa462108c2512306974709",
-    "tools/verify.mjs": "8d88312cb7c67706ff704489d14eeb5ca0980d1c50b47d09ff01580598f8d341"
+    "tools/verify.mjs": "ba9072283556be4deb60b95e714d2939d69a280841e0134b0e406f725878aeb2",
+    "ProbabilisticRuneDowngrade/research/glowing-runes.json": "e46e123193a44cc29c1d3588574b090a1859b4fa54f328cb1f625b2034aba3de"
   },
   "date": "2026-11-06",
-  "checks": 42,
+  "checks": 45,
   "status": "PASS",
   "engine": "Node vm; mocked D2RMM API",
   "actualTables": false,

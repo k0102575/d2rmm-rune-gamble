@@ -17,8 +17,8 @@ function fixture() {
   tables.itemstatcost.rows=Array.from({length:368},(_,i)=>make(tables.itemstatcost,{Stat:'synthetic_'+i,'*ID':String(i)}));
   return tables;
 }
-function run(overrides={},change=()=>{},actual=false) {
-  const tables=fixture(), writes=[]; let next=50000;
+function run(overrides={},change=()=>{},actual=false,modelOverride=undefined) {
+  const tables=fixture(), writes=[], copies=[]; let next=50000;
   if(actual) for(const k of Object.keys(tables)) {
     const lines=fs.readFileSync('/tmp/rg-'+k+'.txt','utf8').replace(/\r/g,'').trimEnd().split('\n');
     const headers=lines.shift().split('\t');
@@ -27,11 +27,17 @@ function run(overrides={},change=()=>{},actual=false) {
   let hd=actual ? JSON.parse(fs.readFileSync('/tmp/rg-items.json','utf8')) : Array.from({length:33},(_,i)=>({['r'+String(i+1).padStart(2,'0')]:{asset:'rune/test_'+(i+1)}})), strings=Array.from({length:33},(_,i)=>({Key:'r'+String(i+1).padStart(2,'0'),enUS:i===23?'Ist Rune':'Rune '+(i+1),koKR:i===23?'이스트룬':'룬 '+(i+1)}));
   change(tables);
   const originalStatRows=JSON.stringify(tables.itemstatcost.rows);
-  const api={getVersion:()=>1.9,getNextStringID:()=>next++,readTsv:p=>{const k=p.split('\\').at(-1).replace('.txt','');return tables[k];},writeTsv:(p,t)=>writes.push([p,t]),readJson:p=>p.startsWith('hd')?hd:strings,writeJson:(p,t)=>writes.push([p,t])};
+  const originalHD=JSON.stringify(hd), originalMisc=JSON.stringify(tables.misc.rows);
+  const models = Object.fromEntries(hd.map(entry=>{
+    const asset=Object.values(entry)[0].asset;
+    return ['hd\\items\\misc\\'+asset+'.json', {entities:[{type:'Entity',name:asset}]}];
+  }));
+  const api={getVersion:()=>1.9,getNextStringID:()=>next++,readTsv:p=>{const k=p.split('\\').at(-1).replace('.txt','');return tables[k];},writeTsv:(p,t)=>writes.push([p,t]),readJson:p=>{if(p==='hd\\items\\items.json')return hd;if(p.startsWith('hd\\items\\misc\\')){if(modelOverride===null)throw Error('Missing model');return modelOverride===undefined?models[p]:modelOverride;}return strings;},copyFile:(src,dst,overwrite)=>copies.push({src,dst,overwrite}),writeJson:(p,t)=>writes.push([p,t])};
   let error;
   try{vm.runInNewContext(code,{config:{...defaults,...overrides},D2RMM:api,console:{log(){}}},{timeout:5000});}catch(e){error=e;}
-  return {tables,writes,error,hd,strings,originalStatRows};
+  return {tables,writes,copies,error,hd,strings,originalStatRows,originalHD,originalMisc,models};
 }
+const copiesAsPlain = value=>JSON.parse(JSON.stringify(value));
 let checks=0;
 function verify(overrides={},actual=false,change=()=>{}) {
  const result=run(overrides,change,actual); assert.equal(result.error,undefined,String(result.error));
@@ -41,8 +47,11 @@ function verify(overrides={},actual=false,change=()=>{}) {
  assert.ok(!metadata.config.some(c=>c.id==='istOnly'));
  assert.equal(metadata.name,'Probabilistic Rune Downgrade');
  assert.equal(metadata.author,'빵길빵길');
- assert.equal(metadata.version,'0.1.0');
- assert.equal(rows.length,ranks*101);assert.equal(writes.length,7);
+ assert.equal(metadata.version,'0.1.1');
+ assert.equal(rows.length,ranks*101);assert.equal(writes.length,39);
+ assert.equal(JSON.stringify(hd.slice(0,-32)),result.originalHD);
+ assert.equal(JSON.stringify(t.misc.rows.slice(0,-32)),result.originalMisc);
+ assert.deepEqual(copiesAsPlain(result.copies),[{src:'hd\\global\\ui\\items\\misc\\rune',dst:'hd\\global\\ui\\items\\misc\\rune',overwrite:true}]);
  const rollIndex=t.itemstatcost.rows.findIndex(r=>r.Stat==='prg_roll');
  assert.equal(rollIndex,t.itemstatcost.rows.length-1);
  assert.equal(JSON.stringify(t.itemstatcost.rows.slice(0,rollIndex)),result.originalStatRows);
@@ -63,7 +72,17 @@ function verify(overrides={},actual=false,change=()=>{}) {
   assert.ok(Object.keys(item).every(k=>t.misc.headers.includes(k)));
   const inputRune=t.misc.rows.find(r=>r.code===start['input 1']);
   for(const field of ['invfile','flippyfile','alternategfx']) assert.equal(item[field],inputRune[field]);
-  assert.equal(JSON.stringify(hd.find(x=>x[pending])[pending]),JSON.stringify(hd.find(x=>x[start['input 1']])[start['input 1']]));
+  const rank=Number(start['input 1'].slice(1));
+  const asset='rune/prg_pending_'+String(rank).padStart(2,'0');
+  const sourceHD=hd.find(x=>x[start['input 1']])[start['input 1']];
+  assert.deepEqual(copiesAsPlain(hd.find(x=>x[pending])[pending]),{...copiesAsPlain(sourceHD),asset});
+  const modelWrite=writes.find(([path])=>path==='hd\\items\\misc\\'+asset+'.json');
+  assert.ok(modelWrite,'HD ground model alias must be written');
+  assert.deepEqual(copiesAsPlain(modelWrite[1]),result.models['hd\\items\\misc\\'+sourceHD.asset+'.json']);
+  for(const suffix of ['.sprite','.lowend.sprite']) {
+    const sprite=new URL('ProbabilisticRuneDowngrade/hd/global/ui/items/misc/'+asset+suffix,root);
+    assert.ok(fs.existsSync(sprite),'Pending sprite must be bundled: '+sprite);
+  }
   const sourceName=strings.find(x=>x.Key===inputRune.namestr);
   const pendingName=strings.find(x=>x.Key===item.namestr);
   assert.equal(pendingName.koKR,sourceName.koKR+' — 분해 대기');
@@ -121,7 +140,7 @@ verify({},false,t=>{
 });
 for(let i=0;i<4;i++){const c={istOnly:false};['doubleChance','singleChance','returnChance','missChance'].forEach((k,j)=>c[k]=i===j?100:0);verify(c);}
 for(const bad of [{doubleChance:51},{doubleChance:-1},{doubleChance:0.5},{doubleChance:'50'},{missChance:NaN}]) {
- const r=run(bad);assert.ok(r.error);assert.equal(r.writes.length,0);checks++;
+ const r=run(bad);assert.ok(r.error);assert.equal(r.writes.length,0);assert.equal(r.copies.length,0);checks++;
 }
 for(const stat of ['different_stat']) {
  const r=run({},t=>t.properties.rows.push(
@@ -130,7 +149,7 @@ for(const stat of ['different_stat']) {
   {code:'pierce-elem',func1:'1',stat1:'passive_fire_pierce'},
  ));
  assert.match(r.error?.message ?? '',/Conflicting item-mythic definitions/);
- assert.equal(r.writes.length,0);checks++;
+ assert.equal(r.writes.length,0);assert.equal(r.copies.length,0);checks++;
 }
 // Relics adds the same Mythic property from a function and its payload.
 // Keep row indices and every field except the redundant code unchanged.
@@ -159,14 +178,34 @@ for(const mutate of [
  t=>t.properties.rows.push({code:'item-mythic',func1:'1',stat1:'item_mythic'},{code:'item-mythic',func1:'1',stat1:'item_mythic'}),
  t=>t.properties.rows.push({code:'prg_mythic_1',func1:'1'}),
 ]) {
- const r=run({},mutate);assert.ok(r.error);assert.equal(r.writes.length,0);checks++;
+ const r=run({},mutate);assert.ok(r.error);assert.equal(r.writes.length,0);assert.equal(r.copies.length,0);checks++;
 }
 for(const mutate of [t=>t.misc.rows.find(r=>r.code==='r24').invfile='',t=>t.armor.rows.push({code:'prg0'}),t=>t.armor.rows.push({code:'pgm'}),t=>t.weapons.rows.push({code:'pgm'}),t=>t.misc.rows.push({code:'pgm'}),t=>t.misc.rows.push({...t.misc.rows[0],code:'prg0'}),t=>t.misc.headers=t.misc.headers.filter(h=>h!=='compactsave'),t=>t.misc.headers=t.misc.headers.filter(h=>h!=='component'),t=>t.misc.rows.find(r=>r.code==='r24').stackable='1',t=>t.itemstatcost.rows[2].Stat='',t=>t.itemstatcost.rows[2].Stat=t.itemstatcost.rows[1].Stat,t=>{while(t.itemstatcost.rows.length<511){let i=t.itemstatcost.rows.length;t.itemstatcost.rows.push({Stat:'synthetic_'+i,'*ID':String(i)});}}]) {
- const r=run({},mutate);assert.ok(r.error);assert.equal(r.writes.length,0);checks++;
+ const r=run({},mutate);assert.ok(r.error);assert.equal(r.writes.length,0);assert.equal(r.copies.length,0);checks++;
 }
+// Missing/invalid current game model must stop before any data or asset writes.
+for(const model of [null,[]]) {
+ const r=run({},()=>{},false,model);assert.ok(r.error);assert.equal(r.writes.length,0);assert.equal(r.copies.length,0);checks++;
+}
+// Verify third-party files byte-for-byte and their native sprite structure.
+const assets=JSON.parse(read('ProbabilisticRuneDowngrade/research/glowing-runes.json'));
+assert.equal(Object.keys(assets.files).length,64);
+const bundled=fs.readdirSync(new URL('ProbabilisticRuneDowngrade/hd/global/ui/items/misc/rune/',root));
+assert.equal(bundled.length,64);
+for(const [path,info] of Object.entries(assets.files)) {
+ const data=fs.readFileSync(new URL('ProbabilisticRuneDowngrade/'+path,root));
+ assert.equal(createHash('sha256').update(data).digest('hex'),info.sha256);
+ assert.equal(data.subarray(0,4).toString(),'SPa1');
+ assert.equal(data.readUInt16LE(4),31);
+ const size=path.endsWith('.lowend.sprite')?49:98;
+ assert.equal(data.readInt32LE(8),size);assert.equal(data.readInt32LE(12),size);
+ assert.equal(data.length,40+size*size*4);
+ assert.match(path,/^hd\/global\/ui\/items\/misc\/rune\/prg_pending_(0[2-9]|[12][0-9]|3[0-3])(?:\.lowend)?\.sprite$/);
+}
+checks++;
 if(fs.existsSync('/tmp/rg-cubemain.txt')) verify({istOnly:false},true);
 const sha = s => createHash('sha256').update(s).digest('hex');
-const inputs=Object.fromEntries(['ProbabilisticRuneDowngrade/mod.js','ProbabilisticRuneDowngrade/mod.json','ProbabilisticRuneDowngrade/research/schema.json','tools/verify.mjs'].map(p=>[p,sha(read(p))]));
+const inputs=Object.fromEntries(['ProbabilisticRuneDowngrade/mod.js','ProbabilisticRuneDowngrade/mod.json','ProbabilisticRuneDowngrade/research/schema.json','tools/verify.mjs','ProbabilisticRuneDowngrade/research/glowing-runes.json'].map(p=>[p,sha(read(p))]));
 const report={inputs,date:new Date().toISOString().slice(0,10),checks,status:'PASS',engine:'Node vm; mocked D2RMM API',actualTables:fs.existsSync('/tmp/rg-cubemain.txt'),limitations:'Not D2RMM installation or game execution. Installer checks only; game validation is separately user-reported. Reign of the Warlock only.'};
 fs.writeFileSync(new URL('ProbabilisticRuneDowngrade/docs/LOCAL_VALIDATION.json',root),JSON.stringify(report,null,2)+'\n');
 console.log(report);

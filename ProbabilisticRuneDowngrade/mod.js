@@ -1,6 +1,6 @@
 /*
  * 확률형 룬 분해 모드 — 악마술사의 군림 전용
- * Probabilistic Rune Downgrade 0.1.0 / 제작자: 빵길빵길
+ * Probabilistic Rune Downgrade 0.1.1 / 제작자: 빵길빵길
  * 오프라인 D2RMM 데이터 모드입니다. 엘드~조드 전체 등급을 생성합니다.
  *
  * 이 파일은 D2RMM의 '모드 설치' 버튼을 누를 때 실행됩니다.
@@ -23,7 +23,7 @@
  * 우리 모드는 Relics of Sanctuary 뒤에 설치하세요. 아래 호환 처리는
  * 완전히 동일한 item-mythic 중복만 대상으로 하며, 모든 모드 호환을 보장하지 않습니다.
  * 쓰는 파일: misc/itemtypes/itemstatcost/properties/cubemain TSV,
- * item-runes.json 문자열, hd/items/items.json 자산 참조입니다.
+ * item-runes.json 문자열, hd/items/items.json, 전용 HD 모델 정의·sprite입니다.
  * armor/weapons는 코드 충돌 검사에만 사용합니다. 세이브 파일은 직접 수정하지 않습니다.
  *
  * 아래 순서로 읽으면 됩니다.
@@ -363,6 +363,8 @@ add(types, {
 // 엘드(2)~조드(33) 전체 32등급을 항상 생성합니다. 엘은 분해하지 않습니다.
 const ranks = Array.from({ length: 32 }, (_, i) => i + 2);
 
+const pendingModels = {};
+
 // 등급마다 첫 단계 1행 + 결과 판정 100행을 추가합니다.
 // 이 상한은 보수적인 안전 제한이며 현행 엔진 한도를 입증한 값은 아닙니다.
 if (cube.rows.length + ranks.length * 101 > 32767) {
@@ -376,7 +378,7 @@ for (const rank of ranks) {
   const rune = 'r' + tag, lower = 'r' + String(rank - 1).padStart(2, '0');
   const key = 'PRGPending' + tag;
 
-  // 입력 룬의 이름과 그림을 재사용하지만, 기능은 전용 대기 아이템입니다.
+  // 입력 룬의 이름·레거시 그림·HD 바닥 모델은 유지하고 HD 아이콘만 분리합니다.
   const sourceRune = unique(misc, 'code', rune);
   const sourceName = unique({ rows: strings }, 'Key', sourceRune.namestr);
   const sourceHD = hd.find(entry => entry[rune]);
@@ -430,7 +432,7 @@ for (const rank of ranks) {
   });
 
   // 그림·바닥 모델·소리 등 표시용 필드만 입력 룬에서 가져옵니다.
-  // 추후 전용 이미지 적용 시 이 부분의 invfile/flippyfile 등을 교체합니다.
+  // 클래식 아이콘·바닥 표시용 필드는 입력 룬 그대로 유지합니다.
   [
     'invfile', 'flippyfile', 'alternategfx', 'dropsound',
     'dropsfxframe', 'usesound', 'transtbl',
@@ -444,9 +446,24 @@ for (const rank of ranks) {
     row.AdvancedStashStackable = '0';
   }
 
-  // HD 그래픽도 입력 룬의 자산을 참조합니다.
-  // 추후 전용 HD 이미지 적용 시 아래 asset 연결을 교체합니다.
-  hd.push({ [pending]: JSON.parse(JSON.stringify(sourceHD[rune])) });
+  // HD asset은 인벤토리 sprite와 바닥 모델 JSON 양쪽에 사용됩니다.
+  // 전용 sprite 경로를 쓰되 현재 입력 룬의 모델 정의를 복제해 바닥 모델을 보존합니다.
+  // 원본 룬 매핑과 공용 아이콘 파일은 수정하지 않습니다.
+  const pendingAsset = 'rune/prg_pending_' + tag;
+  const modelPath = 'hd\\items\\misc\\' + sourceHD[rune].asset + '.json';
+  let sourceModel;
+  try {
+    sourceModel = D2RMM.readJson(modelPath);
+  } catch (e) {
+    fail('Required rune HD model missing: ' + modelPath + ': ' + e);
+  }
+  if (!sourceModel || typeof sourceModel !== 'object' || Array.isArray(sourceModel)) {
+    fail('Unsupported rune HD model: ' + modelPath);
+  }
+  pendingModels['hd\\items\\misc\\' + pendingAsset + '.json'] = sourceModel;
+  const pendingHD = JSON.parse(JSON.stringify(sourceHD[rune]));
+  pendingHD.asset = pendingAsset;
+  hd.push({ [pending]: pendingHD });
 
   // 첫 번째 조합: 룬 + 감별 주문서 → 추첨값을 가진 대기 아이템
   // mod 1 chance=100은 '스탯을 항상 붙인다'는 뜻입니다.
@@ -502,6 +519,15 @@ for (const rank of ranks) {
 // 위 검사와 생성이 모두 끝난 뒤 처음으로 파일을 씁니다.
 // API로 파일을 순차 저장하며, 쓰기 중 오류까지 일괄 되돌리는 트랜잭션은 아닙니다.
 // 설치 실패 시 게임을 실행하지 말고 오류를 확인한 뒤 D2RMM에서 다시 설치하세요.
+// 모드에 포함한 전용 파일만 복사하며 일반 룬의 공용 경로는 덮어쓰지 않습니다.
+D2RMM.copyFile(
+  'hd\\global\\ui\\items\\misc\\rune',
+  'hd\\global\\ui\\items\\misc\\rune',
+  true,
+);
+Object.keys(pendingModels).forEach(path => {
+  D2RMM.writeJson(path, pendingModels[path]);
+});
 Object.keys(files).forEach(path => {
   D2RMM.writeTsv(path, files[path], { addCarriageReturns: true });
 });

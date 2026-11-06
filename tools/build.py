@@ -14,6 +14,14 @@ for name, digest in report['inputs'].items():
 dist = root / 'dist'
 dist.mkdir(exist_ok=True)
 runtime = {f'mods/{mod.name}/{name}': (mod/name).read_bytes() for name in ['mod.js', 'mod.json']}
+runtime[f'mods/{mod.name}/CREDITS.md'] = (mod/'CREDITS.md').read_bytes()
+assets = json.loads((mod/'research/glowing-runes.json').read_text())['files']
+actual_assets = {p.relative_to(mod).as_posix() for p in (mod/'hd').rglob('*') if p.is_file()}
+assert actual_assets == set(assets), 'Unexpected or missing bundled assets'
+for name, info in sorted(assets.items()):
+    data = (mod/name).read_bytes()
+    assert hashlib.sha256(data).hexdigest() == info['sha256'], f'Asset changed: {name}'
+    runtime[f'mods/{mod.name}/{name}'] = data
 full = dict(runtime)
 for name in ['README.md', 'CHANGELOG.md']:
     full[name] = (mod/name).read_bytes()
