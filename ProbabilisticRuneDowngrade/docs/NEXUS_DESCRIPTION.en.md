@@ -66,7 +66,7 @@ The following author-reported game checks used **0.1.0, before the icon change**
 
 The combined setup included Relics of Sanctuary, Corruption Shards for RoTW, and rune stacking. Checks also covered descending from Zod to El, runewords, rune storage and stacking, existing upgrade recipes, socket use, save/reload, and resolving a pending item after save/reload. The exact game build and complete active mod list were not recorded. These samples do not prove the random distribution or universal compatibility.
 
-**Automated checks:** 58 generator checks using synthetic fixtures cover all ranks and stored rolls, settings validation and compatibility cases. Each of the four configurations with exactly one outcome at 0% and all others positive passed automated checks. **Their combined-mod in-game tests remain incomplete. Game version 3.4 has not been verified.** Automated checks do not run D2RMM or the game.
+**Automated checks:** 58 generator checks using synthetic fixtures cover all ranks and stored rolls, settings validation and compatibility cases. Each of the four configurations with exactly one outcome at 0% and all others positive passed automated checks. Separately, the author reported **10 in-game trials each with mod 0.1.0, D2RMM 1.9.2 and game version 3.3** with `33/33/34/0`, `33/33/0/34`, `33/0/33/34` and `0/33/33/34`: **40 trials with no issues reported**. The exact game build, standalone/mixed-mod status and outcome counts for these additional trials have not yet been recorded. **Game version 3.4 has not been verified.** Automated checks do not run D2RMM or the game.
 
 ## Credits and disclosure
 
