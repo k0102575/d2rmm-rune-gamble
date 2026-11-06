@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0 publication documentation — 2026-11-06
+
+- Use k0102575 as the public author name, with 빵길빵길 in Korean documentation; retain the existing mod.json author value.
+- Link mod-specific source references to ProbabilisticRuneDowngrade within the multi-mod repository.
+- Add inspiration credit, unpublished Nexus preparation notes, and distinguish pending post-patch game checks from automated validation.
+- Keep runtime code, configuration and the minimal installation package unchanged.
+
 ## 0.1.0 documentation refresh — 2026-11-05
 
 - Update the release page and documentation archive with all four validation sessions and shared rune-use checks.
