@@ -1,5 +1,7 @@
 # Probabilistic Rune Downgrade — 0.1.0
 
+[English description](docs/NEXUS_DESCRIPTION.en.md)
+
 제작자: **k0102575 (빵길빵길)**. 악마술사의 군림(Reign of the Warlock) 전용 오프라인 D2RMM 모드입니다.
 
 룬 1개 + 낱장 감별 주문서 1개 → 분해 대기 아이템 → 추가 재료 없이 대기 아이템만 다시 조합하여 결과를 받습니다.
