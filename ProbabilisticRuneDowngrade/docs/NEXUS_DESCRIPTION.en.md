@@ -25,7 +25,7 @@ The pending item stores a roll from 1 to 100 when first created. The second tran
 
 ## Dismantling hammer
 
-Buy the dedicated **Rune Dismantling Hammer** from **Gheed in Act I**. It is a non-stackable, 1×1 material configured for Normal, Nightmare and Hell. Its base cost is 1 gold, targeting 1-gold purchase and resale; actual vendor pricing and stock behavior have not yet been verified in-game. Other vendor prices are not modified.
+Buy the dedicated **Rune Dismantling Hammer** from **Gheed in Act I**. It is a non-stackable, 1×1 material configured for Normal, Nightmare and Hell. Its base cost is 1 gold. With D2RMM 1.9.0 and game 3.3 alongside other mods, the author reported normal vendor stock behavior and 1-gold purchase and resale. Other vendor prices are not modified.
 
 The cyan hammer icon was created with AI assistance, based on the Horadric Malus silhouette. The quest Malus is not an ingredient and is not modified. Both HD sprite resolutions are included. Classic graphics reference the original Malus icon; its fit in a 1×1 slot has not been tested.
 
@@ -55,7 +55,7 @@ The Relics compatibility handling renames only later, identical `item-mythic` pr
 
 ## Validation scope
 
-The following author-reported game checks used **0.1.0, before the icon change**. **Gheed sales, hammer recipes, new icons, ground display and save/reload behavior of this version have not yet been tested in-game.** Outcome order below is **two lower / one lower / returned rune / miss**.
+The following author-reported game checks used **0.1.0, before the icon change**. Additional hammer-version checks are recorded separately below. Outcome order below is **two lower / one lower / returned rune / miss**.
 
 | Environment | Chances | Trials / result |
 |---|---|---|
@@ -69,6 +69,8 @@ The combined setup included Relics of Sanctuary, Corruption Shards for RoTW, and
 **Automated checks:** 58 generator checks using synthetic fixtures cover all ranks and stored rolls, settings validation and compatibility cases. Each of the four configurations with exactly one outcome at 0% and all others positive passed automated checks. Separately, the author reported **10 in-game trials each with mod 0.1.0, D2RMM 1.9.2 and game version 3.3** with `33/33/34/0`, `33/33/0/34`, `33/0/33/34` and `0/33/33/34`: **40 trials with no issues reported**. The exact game build, standalone/mixed-mod status and outcome counts for these additional trials have not yet been recorded. **Game version 3.4 has not been verified.** Automated checks do not run D2RMM or the game.
 
 **0.1.1 icon-version check:** With D2RMM 1.9.0 and game 3.3, the author confirmed the glowing pending icon, save/reload and all four outcomes. No 100- or 50-trial probability run was performed in this session; standalone/mixed-mod status, settings and outcome counts were not recorded. This does not validate the hammer feature in-game.
+
+**0.2.0-alpha.1 hammer-version check:** With D2RMM 1.9.0 and game 3.3 alongside other mods, the author reported no issues with Gheed sales in all difficulties, 1-gold purchase/resale, repeat purchases, the non-stackable one-slot icon, each outcome set to 100%, ground display, or save/reload followed by transmutation. Trial counts, the full mod list and exact game build were not recorded. This does not establish game 3.4 or universal mod compatibility.
 
 ## Credits and disclosure
 
