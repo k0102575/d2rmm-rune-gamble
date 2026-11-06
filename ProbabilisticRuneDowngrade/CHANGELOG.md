@@ -2,6 +2,8 @@
 
 ## 0.2.0-alpha.1 — 2026-11-06
 
+- Add the `ÿcF` color prefix to the hammer name in Korean, English and fallback languages (2026-11-07); item codes and recipes are unchanged.
+
 - Replace the Identify Scroll ingredient with a non-stackable 1×1 Rune Dismantling Hammer, configured for sale by Gheed in all difficulties.
 - Return one hammer instead of a scroll on a miss; retain all four default percentages and rune quantities.
 - Add the approved cyan AI-assisted hammer icon in both HD resolutions and preserve the original quest Malus.

@@ -70,8 +70,11 @@ function verify(overrides={},actual=false,change=()=>{}) {
  assert.equal(hd.find(r=>r.prh).prh.asset,'prg/dismantling_hammer');
  const hammerModel=writes.find(([p])=>p==='hd\\items\\misc\\prg/dismantling_hammer.json');
  assert.deepEqual(copiesAsPlain(hammerModel[1]),result.models['hd\\items\\weapon\\hammer/test_malus.json']);
- assert.equal(strings.find(r=>r.Key==='PRGHammer').enUS,'Rune Dismantling Hammer');
- assert.equal(strings.find(r=>r.Key==='PRGHammer').koKR,'룬 분해 망치');
+ assert.equal(strings.find(r=>r.Key==='PRGHammer').enUS,'ÿcFRune Dismantling Hammer');
+ assert.equal(strings.find(r=>r.Key==='PRGHammer').koKR,'ÿcF룬 분해 망치');
+ for(const [key,value] of Object.entries(strings.find(r=>r.Key==='PRGHammer'))) {
+  if(key!=='Key'&&key!=='id') assert.ok(value.startsWith('ÿcF'), 'Hammer name color: '+key);
+ }
  const rollIndex=t.itemstatcost.rows.findIndex(r=>r.Stat==='prg_roll');
  assert.equal(rollIndex,t.itemstatcost.rows.length-1);
  assert.equal(JSON.stringify(t.itemstatcost.rows.slice(0,rollIndex)),result.originalStatRows);
