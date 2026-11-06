@@ -1,0 +1,42 @@
+name: Upload provided 0.1.1 archive
+on:
+  push:
+    branches: [release-upload-prg-0.1.1]
+permissions:
+  contents: write
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Verify original uploaded archive and source
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import hashlib,json
+          path=Path('.release-upload/ProbabilisticRuneDowngrade-0.1.1-mods-only.zip')
+          assert hashlib.sha256(path.read_bytes()).hexdigest()=='2c3468961314ab41e5ab4125df4fb2b923ddc0bde5d578eaba202604bf30c2e2'
+          with ZipFile(path) as z:
+              assert z.testzip() is None
+              assert json.loads(z.read('mod.json'))['version']=='0.1.1'
+              for name in z.namelist():
+                  assert not name.startswith('/') and '..' not in name.split('/')
+                  if name.endswith('/'): continue
+                  assert z.read(name)==(Path('ProbabilisticRuneDowngrade')/name).read_bytes(),name
+          PY
+      - name: Publish provided ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          TAG=ProbabilisticRuneDowngrade-v0.1.1
+          gh release create "$TAG" --target 7dbe4b5a902fe697cb3db24aa047e0fbae453476 \
+            --draft --prerelease --title 'Probabilistic Rune Downgrade 0.1.1' \
+            --notes-file .release-upload/notes.md
+          gh release upload "$TAG" \
+            .release-upload/ProbabilisticRuneDowngrade-0.1.1-mods-only.zip \
+            .release-upload/ProbabilisticRuneDowngrade-0.1.1-mods-only.zip.sha256 \
+            .release-upload/CREDITS.md .release-upload/LICENSE.txt
+          gh release edit "$TAG" --draft=false --prerelease
