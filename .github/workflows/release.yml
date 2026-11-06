@@ -3,13 +3,13 @@ name: Publish release
 on:
   push:
     tags:
-      - 'v*'
+      - 'ProbabilisticRuneDowngrade-v*'
   workflow_dispatch:
     inputs:
       tag:
         description: Existing version tag to publish
         required: true
-        default: v0.1.0
+        default: ProbabilisticRuneDowngrade-v0.1.0
         type: string
 
 permissions:
@@ -35,8 +35,8 @@ jobs:
           python3 - <<'PY'
           import json, os
           from pathlib import Path
-          version = json.loads(Path('mods/ProbabilisticRuneDowngrade/mod.json').read_text())['version']
-          assert os.environ['RELEASE_TAG'] == 'v' + version, 'Tag must match mod.json version'
+          version = json.loads(Path('ProbabilisticRuneDowngrade/mod.json').read_text())['version']
+          assert os.environ['RELEASE_TAG'] == 'ProbabilisticRuneDowngrade-v' + version, 'Tag must match mod.json version'
           PY
 
       - name: Validate generated recipes
@@ -53,7 +53,7 @@ jobs:
           gh release create "$RELEASE_TAG" \
             --verify-tag --draft \
             --title "Probabilistic Rune Downgrade $RELEASE_TAG" \
-            --notes-file docs/RELEASE_NOTES.ko.md
+            --notes-file ProbabilisticRuneDowngrade/docs/RELEASE_NOTES.ko.md
           gh release upload "$RELEASE_TAG" dist/*.zip dist/*.sha256
           gh release edit "$RELEASE_TAG" --draft=false
           gh release view "$RELEASE_TAG" --json url,isDraft,isPrerelease,assets

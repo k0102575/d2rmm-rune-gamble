@@ -1,0 +1,14 @@
+{
+  "inputs": {
+    "ProbabilisticRuneDowngrade/mod.js": "d78238fca79c636ccc6b158c7a7f4293a04e406cf9c986e982d11a251744706f",
+    "ProbabilisticRuneDowngrade/mod.json": "6f47266a92c2ede2a04665b2373853bb698b1f750c0cdaaabb2198e6a5be3b95",
+    "ProbabilisticRuneDowngrade/research/schema.json": "c7e5a39958a23432062851714ebf2857d9e888cd31fa462108c2512306974709",
+    "tools/verify.mjs": "8d88312cb7c67706ff704489d14eeb5ca0980d1c50b47d09ff01580598f8d341"
+  },
+  "date": "2026-11-06",
+  "checks": 42,
+  "status": "PASS",
+  "engine": "Node vm; mocked D2RMM API",
+  "actualTables": false,
+  "limitations": "Not D2RMM installation or game execution. Installer checks only; game validation is separately user-reported. Reign of the Warlock only."
+}

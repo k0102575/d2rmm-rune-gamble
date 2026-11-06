@@ -1,9 +1,6 @@
 name: Refresh release documentation
 
 on:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/installation-asset.yml']
   workflow_dispatch:
 
 permissions:
@@ -28,11 +25,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          RELEASE_TAG="v$(python3 -c "import json; print(json.load(open('mods/ProbabilisticRuneDowngrade/mod.json'))['version'])")"
+          RELEASE_TAG="v$(python3 -c "import json; print(json.load(open('ProbabilisticRuneDowngrade/mod.json'))['version'])")"
           gh release view "$RELEASE_TAG" --json tagName,isDraft,isPrerelease
           RELEASE_VERSION="${RELEASE_TAG#v}"
           gh release upload "$RELEASE_TAG" \
             "dist/ProbabilisticRuneDowngrade-${RELEASE_VERSION}.zip" \
             "dist/ProbabilisticRuneDowngrade-${RELEASE_VERSION}.zip.sha256" --clobber
-          gh release edit "$RELEASE_TAG" --notes-file docs/RELEASE_NOTES.ko.md
+          gh release edit "$RELEASE_TAG" --notes-file ProbabilisticRuneDowngrade/docs/RELEASE_NOTES.ko.md
           gh release view "$RELEASE_TAG" --json url,assets

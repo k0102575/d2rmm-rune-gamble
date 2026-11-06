@@ -4,10 +4,10 @@ import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 const root = new URL('../', import.meta.url);
 const read = p => fs.readFileSync(new URL(p,root),'utf8');
-const code=read('mods/ProbabilisticRuneDowngrade/mod.js');
-const metadata=JSON.parse(read('mods/ProbabilisticRuneDowngrade/mod.json'));
+const code=read('ProbabilisticRuneDowngrade/mod.js');
+const metadata=JSON.parse(read('ProbabilisticRuneDowngrade/mod.json'));
 const defaults=Object.fromEntries(metadata.config.map(c=>[c.id,c.defaultValue]));
-const schema=JSON.parse(read('research/schema.json'));
+const schema=JSON.parse(read('ProbabilisticRuneDowngrade/research/schema.json'));
 function fixture() {
   const tables=structuredClone(schema);
   const make=(t,v)=>Object.assign(Object.fromEntries(t.headers.map(k=>[k,''])),v);
@@ -81,6 +81,11 @@ function verify(overrides={},actual=false,change=()=>{}) {
  checks++;
 }
 verify();verify({istOnly:true}); // stale saved checkbox must not restrict ranks
+// Exactly one zero-probability result, with all other results positive.
+// verify() exhausts rolls 1..100 for every rank and checks exact output counts.
+for(const chances of [[0,34,33,33],[33,0,34,33],[33,33,0,34],[34,33,33,0]]) {
+ verify(Object.fromEntries(['doubleChance','singleChance','returnChance','missChance'].map((key,i)=>[key,chances[i]])));
+}
 // User's installation has no misc "auto prefix" column. Remove it from
 // headers AND rows so the fixture matches what the TSV reader actually returns.
 function withoutAutoPrefix(t) {
@@ -161,7 +166,7 @@ for(const mutate of [t=>t.misc.rows.find(r=>r.code==='r24').invfile='',t=>t.armo
 }
 if(fs.existsSync('/tmp/rg-cubemain.txt')) verify({istOnly:false},true);
 const sha = s => createHash('sha256').update(s).digest('hex');
-const inputs=Object.fromEntries(['mods/ProbabilisticRuneDowngrade/mod.js','mods/ProbabilisticRuneDowngrade/mod.json','research/schema.json','tools/verify.mjs'].map(p=>[p,sha(read(p))]));
+const inputs=Object.fromEntries(['ProbabilisticRuneDowngrade/mod.js','ProbabilisticRuneDowngrade/mod.json','ProbabilisticRuneDowngrade/research/schema.json','tools/verify.mjs'].map(p=>[p,sha(read(p))]));
 const report={inputs,date:new Date().toISOString().slice(0,10),checks,status:'PASS',engine:'Node vm; mocked D2RMM API',actualTables:fs.existsSync('/tmp/rg-cubemain.txt'),limitations:'Not D2RMM installation or game execution. Installer checks only; game validation is separately user-reported. Reign of the Warlock only.'};
-fs.writeFileSync(new URL('docs/LOCAL_VALIDATION.json',root),JSON.stringify(report,null,2)+'\n');
+fs.writeFileSync(new URL('ProbabilisticRuneDowngrade/docs/LOCAL_VALIDATION.json',root),JSON.stringify(report,null,2)+'\n');
 console.log(report);

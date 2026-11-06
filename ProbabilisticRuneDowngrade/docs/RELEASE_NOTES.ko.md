@@ -38,7 +38,7 @@
 
 룬 겹치기 등 다른 모드의 기능은 해당 모드를 함께 사용하는 환경에서 확인했습니다.
 
-위 기록은 테스트한 환경의 결과이며 모든 게임 패치와 모드 조합의 호환성을 보장하지는 않습니다. 반복 횟수만으로 설정 확률의 정확성이 완전히 증명되는 것은 아닙니다. 로컬 생성기 검사와 실제 게임 검증은 구분합니다. [검증 기록](docs/TESTING.ko.md), [로컬 검사](docs/LOCAL_VALIDATION.json), [구현 기록](docs/IMPLEMENTATION.md)을 참고하세요.
+위 기록은 테스트한 환경의 결과이며 모든 게임 패치와 모드 조합의 호환성을 보장하지는 않습니다. 반복 횟수만으로 설정 확률의 정확성이 완전히 증명되는 것은 아닙니다. 로컬 생성기 검사와 실제 게임 검증은 구분합니다. [검증 기록](https://github.com/k0102575/diablo2-mods/blob/main/ProbabilisticRuneDowngrade/docs/TESTING.ko.md), [로컬 검사](https://github.com/k0102575/diablo2-mods/blob/main/ProbabilisticRuneDowngrade/docs/LOCAL_VALIDATION.json), [구현 기록](https://github.com/k0102575/diablo2-mods/blob/main/ProbabilisticRuneDowngrade/docs/IMPLEMENTATION.md)을 참고하세요.
 
 ## 저장 및 모드 구성 변경 주의
 
@@ -47,3 +47,8 @@
 ## 문서 갱신 (2026-11-05)
 
 릴리스 본문과 설명서 포함 ZIP의 README·검증 기록을 최신 내용으로 갱신했습니다. 간편 설치 ZIP과 모드 실행 코드는 그대로이며 버전은 0.1.0을 유지합니다. 설명서 포함 ZIP과 해당 SHA-256 파일은 새 문서에 맞춰 교체합니다. v0.1.0 태그와 GitHub 자동 생성 Source code 아카이브는 유지합니다.
+
+
+## 저장소 이전
+
+소스와 개발 문서를 diablo2-mods 저장소의 ProbabilisticRuneDowngrade 폴더로 이전했습니다. 기존 커밋과 v0.1.0 태그를 보존하며 모드 실행 코드·설정 및 간편 설치 ZIP은 기존 배포본과 동일합니다. 설명서 포함 ZIP은 새 저장소 구조와 링크를 반영해 다시 제작했습니다.

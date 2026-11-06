@@ -1,0 +1,41 @@
+name: Import historical release
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/migrate-release.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: import-historical-release
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Validate and build migrated project
+        run: |
+          node tools/verify.mjs
+          python3 tools/build.py
+      - name: Preserve original annotated tag
+        run: |
+          git fetch https://github.com/k0102575/d2rmm-rune-gamble.git refs/tags/v0.1.0:refs/tags/v0.1.0
+          git push origin refs/tags/v0.1.0
+      - name: Publish copied release with current documentation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if ! gh release view v0.1.0 >/dev/null 2>&1; then
+            gh release create v0.1.0 --verify-tag --draft \
+              --title 'Probabilistic Rune Downgrade v0.1.0' \
+              --notes-file ProbabilisticRuneDowngrade/docs/RELEASE_NOTES.ko.md
+          fi
+          gh release upload v0.1.0 dist/*.zip dist/*.sha256 --clobber
+          gh release edit v0.1.0 --draft=false --prerelease=false \
+            --notes-file ProbabilisticRuneDowngrade/docs/RELEASE_NOTES.ko.md
+          gh release view v0.1.0 --json url,isDraft,isPrerelease,assets
