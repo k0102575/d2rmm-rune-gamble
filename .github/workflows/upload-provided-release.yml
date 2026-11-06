@@ -1,0 +1,37 @@
+name: Upload provided 0.2.0 archive
+on:
+  push:
+    branches: [release-upload-prg-0.2.0]
+permissions:
+  contents: write
+jobs:
+  upload:
+    if: github.repository == 'k0102575/d2rmm-rune-gamble'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Verify original uploaded archive and source
+        run: |
+          python3 - <<'PYTHON'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import hashlib,json
+          p=Path('.release-upload/ProbabilisticRuneDowngrade-0.2.0-mods-only.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='de7bc891ce95cd84fbd5b0d2906f475a18ac0fee4a8f8e6eb9f1314f58bbc941'
+          with ZipFile(p) as z:
+              assert z.testzip() is None
+              assert json.loads(z.read('mod.json'))['version']=='0.2.0'
+              for i in z.infolist():
+                  assert not i.filename.startswith('/') and '..' not in i.filename.split('/')
+                  if not i.is_dir():
+                      assert z.read(i)==(Path('ProbabilisticRuneDowngrade')/i.filename).read_bytes()
+          PYTHON
+      - name: Publish provided ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create v0.2.0 --target "${{ github.sha }}" --draft --title 'Probabilistic Rune Downgrade 0.2.0' --notes-file .release-upload/notes.md
+          gh release upload v0.2.0 .release-upload/ProbabilisticRuneDowngrade-0.2.0-mods-only.zip .release-upload/ProbabilisticRuneDowngrade-0.2.0-mods-only.zip.sha256 .release-upload/CREDITS.md .release-upload/LICENSE.txt
+          gh release edit v0.2.0 --draft=false --prerelease=false --latest
