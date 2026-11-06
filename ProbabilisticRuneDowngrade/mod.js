@@ -383,7 +383,7 @@ pendingModels['hd\\items\\misc\\' + hammerAsset + '.json'] = hammerModel;
 const hammerHD = JSON.parse(JSON.stringify(sourceHammerHD));
 hammerHD.asset = hammerAsset;
 hd.push({ [hammerCode]: hammerHD });
-text('PRGHammer', 'ÿcPRune Dismantling Hammer', 'ÿcP룬 분해 망치');
+text('PRGHammer', 'ÿc3Rune Dismantling Hammer', 'ÿc3룬 분해 망치');
 text('PRGHammerHelp', 'Transmute with one rune (Eld-Zod). Consumed; returned on a miss.',
   '엘드~조드 룬 1개와 조합. 소모되며 꽝일 때 망치만 반환됩니다.');
 add(types, {

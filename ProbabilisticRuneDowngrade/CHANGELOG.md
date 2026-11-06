@@ -2,7 +2,7 @@
 
 ## 0.2.0-alpha.1 — 2026-11-06
 
-- Use the `ÿcP` color prefix for the hammer name in all languages (2026-11-07), replacing `ÿcF` after user feedback about its in-game appearance; item codes and recipes are unchanged.
+- Use the standard blue `ÿc3` color prefix for the hammer name in all languages (2026-11-07), replacing the previously tried `ÿcF` and `ÿcP` colors; item codes and recipes are unchanged.
 
 - Replace the Identify Scroll ingredient with a non-stackable 1×1 Rune Dismantling Hammer, configured for sale by Gheed in all difficulties.
 - Return one hammer instead of a scroll on a miss; retain all four default percentages and rune quantities.
