@@ -68,6 +68,8 @@ The combined setup included Relics of Sanctuary, Corruption Shards for RoTW, and
 
 **Automated checks:** 58 generator checks using synthetic fixtures cover all ranks and stored rolls, settings validation and compatibility cases. Each of the four configurations with exactly one outcome at 0% and all others positive passed automated checks. Separately, the author reported **10 in-game trials each with mod 0.1.0, D2RMM 1.9.2 and game version 3.3** with `33/33/34/0`, `33/33/0/34`, `33/0/33/34` and `0/33/33/34`: **40 trials with no issues reported**. The exact game build, standalone/mixed-mod status and outcome counts for these additional trials have not yet been recorded. **Game version 3.4 has not been verified.** Automated checks do not run D2RMM or the game.
 
+**0.1.1 icon-version check:** With D2RMM 1.9.0 and game 3.3, the author confirmed the glowing pending icon, save/reload and all four outcomes. No 100- or 50-trial probability run was performed in this session; standalone/mixed-mod status, settings and outcome counts were not recorded. This does not validate the hammer feature in-game.
+
 ## Credits and disclosure
 
 - Mod author: **k0102575**.
