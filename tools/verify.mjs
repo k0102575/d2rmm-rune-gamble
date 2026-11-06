@@ -70,10 +70,10 @@ function verify(overrides={},actual=false,change=()=>{}) {
  assert.equal(hd.find(r=>r.prh).prh.asset,'prg/dismantling_hammer');
  const hammerModel=writes.find(([p])=>p==='hd\\items\\misc\\prg/dismantling_hammer.json');
  assert.deepEqual(copiesAsPlain(hammerModel[1]),result.models['hd\\items\\weapon\\hammer/test_malus.json']);
- assert.equal(strings.find(r=>r.Key==='PRGHammer').enUS,'ÿc3Rune Dismantling Hammer');
- assert.equal(strings.find(r=>r.Key==='PRGHammer').koKR,'ÿc3룬 분해 망치');
+ assert.equal(strings.find(r=>r.Key==='PRGHammer').enUS,'Rune Dismantling Hammer');
+ assert.equal(strings.find(r=>r.Key==='PRGHammer').koKR,'룬 분해 망치');
  for(const [key,value] of Object.entries(strings.find(r=>r.Key==='PRGHammer'))) {
-  if(key!=='Key'&&key!=='id') assert.ok(value.startsWith('ÿc3'), 'Hammer name color: '+key);
+  if(key!=='Key'&&key!=='id') assert.ok(!value.includes('ÿc'), 'Hammer name must use the default color: '+key);
  }
  const rollIndex=t.itemstatcost.rows.findIndex(r=>r.Stat==='prg_roll');
  assert.equal(rollIndex,t.itemstatcost.rows.length-1);
